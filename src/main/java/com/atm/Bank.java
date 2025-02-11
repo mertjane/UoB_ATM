@@ -2,7 +2,7 @@ package com.atm;
 
 // Mertcan Kara
 //11 Feb 13.27
-//litaaaaa
+//litaaaaaaa
 
 // Bank class - simple implementation of a bank, with a list of bank accounts, an
 // a current account that we are logged in to.
