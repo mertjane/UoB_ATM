@@ -114,7 +114,7 @@ public class Model
                 display1 = "";
                 // now check the account/password combination. If it's ok go into the LOGGED_IN
                 // state, otherwise go back to the start (by re-initialsing)
-                if ( bank.login(accNumber, accPasswd) )
+                if (bank.login(accNumber, accPasswd) )
                 {
                     setState(LOGGED_IN);
                     display2 = "Accepted\n" +

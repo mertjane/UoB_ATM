@@ -1,5 +1,7 @@
 package com.atm;
 
+import java.util.ArrayList;
+
 // Mertcan Task 2 Update 2.0.0
 
 // Bank class - simple implementation of a bank, with a list of bank accounts, an
@@ -16,33 +18,38 @@ public class Bank
     // Instance variables containing the bank information
     int maxAccounts = 10;       // maximum number of accounts the bank can hold
     int numAccounts = 0;        // the number of accounts currently in the bank
-    BankAccount[] accounts = new BankAccount[maxAccounts];  // array to hold the bank accounts
-    BankAccount account = null; // currently logged in acccount ('null' if no-one is logged in)
+
+    
+    // Week 2 implementation
+    // Implemented by Mertcan, version 1.0.0
+    private ArrayList<BankAccount> accounts = new ArrayList<>(); // ArrayList to hold the bank accounts
+    private BankAccount currentAccount = null; // Currently logged-in account ('null' if no-one is logged in)
+   
 
     // Constructor method - this provides a couple of example bank accounts to work with
-    public Bank()
-    {
+    public Bank() {
         Debug.trace( "Bank::<constructor>");
-
-
+        
+        // Week 2 implementation
+        // Implemented by Mertcan, version 1.0.0
+        // Initialize the accounts list as a new empty ArrayList
+        accounts = new ArrayList<>();
     }
 
     // a method to create new BankAccounts - this is known as a 'factory method' and is a more
     // flexible way to do it than just using the 'new' keyword directly.
-    public BankAccount makeBankAccount(int accNumber, int accPasswd, int balance)
-    {
+    public BankAccount makeBankAccount(int accNumber, int accPasswd, int balance) {
         return new BankAccount(accNumber, accPasswd, balance);
     }
 
     // a method to add a new bank account to the bank - it returns true if it succeeds
     // or false if it fails (because the bank is 'full')
-    public boolean addBankAccount(BankAccount a)
-    {
+    public boolean addBankAccount(BankAccount account) {
         if (numAccounts < maxAccounts) {
-            accounts[numAccounts] = a;
+            accounts.add(account);
             numAccounts++ ;
             Debug.trace( "Bank::addBankAccount: added " +
-                    a.accNumber +" "+ a.accPasswd +" £"+ a.balance);
+                account.accNumber +" "+ account.accPasswd +" £"+ account.balance);
             return true;
         } else {
             Debug.trace( "Bank::addBankAccount: can't add bank account - too many accounts");
@@ -73,11 +80,31 @@ public class Bank
 
         // YOU NEED TO ADD CODE HERE TO FIND THE RIGHT ACCOUNT IN THE accounts ARRAY,
         // SET THE account VARIABLE AND RETURN true
+        
 
+        // Week 2 implementation
+        // Implemented by Mertcan, version 1.0.0
+        // Iterate through all the bank accounts in the accounts list
+        for (BankAccount account : accounts) {
+            // Check if the account number and password match the provided ones
+            if (account.getAccNumber() == newAccNumber && account.getAccPasswd() == newAccPasswd) {
+
+                // If a match is found, set the current account to the matched account
+                currentAccount = account;
+
+                 // Log a message indicating the login was successful
+                Debug.trace("Bank::login: Login successful for account number: " + newAccNumber);
+
+                // Return true to indicate that the login was successful
+                return true; 
+            }
+        }
 
         // not found - return false
-        account = null;
+        Debug.trace("Bank::login: Login failed for accNumber = " + newAccNumber);
+        currentAccount = null;
         return false;
+
     }
 
     // Reset the bank to a 'logged out' state
@@ -85,20 +112,14 @@ public class Bank
     {
         if (loggedIn())
         {
-            Debug.trace( "Bank::logout: logging out, accNumber = " + account.accNumber);
-            account = null;
+            Debug.trace( "Bank::logout: logging out, accNumber = " + currentAccount.accNumber);
+            currentAccount  = null;
         }
     }
 
     // test whether the bank is logged in to an account or not
-    public boolean loggedIn()
-    {
-        if (account == null)
-        {
-            return false;
-        } else {
-            return true;
-        }
+    public boolean loggedIn() {
+        return currentAccount != null;
     }
 
     // try to deposit money into the account (by calling the deposit method on the
@@ -106,7 +127,7 @@ public class Bank
     public boolean deposit(int amount)
     {
         if (loggedIn()) {
-            return account.deposit(amount);
+            return currentAccount.deposit(amount);
         } else {
             return false;
         }
@@ -117,7 +138,7 @@ public class Bank
     public boolean withdraw(int amount)
     {
         if (loggedIn()) {
-            return account.withdraw(amount);
+            return currentAccount.withdraw(amount);
         } else {
             return false;
         }
@@ -128,7 +149,7 @@ public class Bank
     public int getBalance()
     {
         if (loggedIn()) {
-            return account.getBalance();
+            return currentAccount.getBalance();
         } else {
             return -1; // use -1 as an indicator of an error
         }
