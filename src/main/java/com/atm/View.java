@@ -1,145 +1,252 @@
 package com.atm;
 
-// The View class creates and manages the GUI for the application.
-// It doesn't know anything about the ATM itself, it just displays
-// the current state of the Model, (title, output1 and output2),
-// and handles user input from the buttons and handles user input
-
-// We import lots of JavaFX libraries (we may not use them all, but it
-// saves us having to thinkabout them if we add new code)
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.*;
 
-class View
-{
-    int H = 420;         // Height of window pixels
-    int W = 500;         // Width  of window pixels
+/**
+ * The View class represents the graphical user interface (GUI) for the ATM application.
+ * It handles the layout, user input, and display updates using JavaFX components.
+ * <p>
+ * This class follows the Model-View-Controller (MVC) design pattern, with references to the
+ * Model and Controller objects to communicate user actions and update the display.
+ * </p>
+ * <p>
+ * Version and Task Info: Gur Task Week 4 version 1.0.1
+ * </p>
+ */
+class View {
+    /** Initial window height */
+    int H = 850;
+    /** Initial window width */
+    int W = 850;
 
-    // variables for components of the user interface
-    Label      title;         // Title area (not the window title)
-    TextField  message;       // Message area, where numbers appear
-    TextArea   reply;         // Reply area where results or info are shown
-    ScrollPane scrollPane;    // scrollbars around the TextArea object
-    GridPane   grid;          // main layout grid
-    TilePane   buttonPane;    // tiled area for buttons
+    // UI components
 
-    // The other parts of the model-view-controller setup
+    /** Label for the ATM title (if needed) */
+    Label title;
+    /** TextField used as the top display screen for messages */
+    TextField message;
+    /** TextArea used for the main reply or detailed messages */
+    TextArea reply;
+    /** ScrollPane to contain the reply TextArea */
+    ScrollPane scrollPane;
+    /** TilePane for the numeric keypad */
+    TilePane numPad;
+    /** TilePane for the command keypad (Deposit, Withdraw, etc.) */
+    TilePane commandPad;
+    /** ImageView for displaying the background image */
+    ImageView backgroundImageView;
+
+    // MVC references
+
+    /** Reference to the Model (application logic) */
     public Model model;
+    /** Reference to the Controller (handles user actions) */
     public Controller controller;
 
-    // we don't really need a constructor method, but include one to print a
-    // debugging message if required
-    public View()
-    {
+    /**
+     * Constructs a new View instance.
+     * Initializes the view and prints a debugging trace message.
+     */
+    public View() {
         Debug.trace("View::<constructor>");
     }
 
-    // start is called from Main, to start the GUI up
-    // Note that it is important to create controls etc here and
-    // not in the constructor (or as initialisations to instance variables),
-    // because we need things to be initialised in the right order
-    public void start(Stage window)
-    {
+    /**
+     * Sets up and displays the ATM user interface on the provided Stage.
+     * <p>
+     * This method configures the JavaFX components including the background image, screen displays,
+     * numeric keypad, command keypad, and layout anchors. It also binds resize listeners to adjust the UI.
+     * </p>
+     *
+     * @param window The primary stage where the UI will be displayed.
+     */
+    public void start(Stage window) {
         Debug.trace("View::start");
 
-        // create the user interface component objects
-        // The ATM is a vertical grid of four components -
-        // label, two text boxes, and a tiled panel
-        // of buttons
+        //Gur Task Week 4 version 1.0.1
+        // 1) Load the background image and center it
+        Image backgroundImage = new Image("atm.jpg");
+        backgroundImageView = new ImageView(backgroundImage);
+        backgroundImageView.setPreserveRatio(true);
+        backgroundImageView.setFitWidth(W);
+        backgroundImageView.setFitHeight(H);
 
-        // layout objects
-        grid = new GridPane();
-        grid.setId("Layout");            //assign an id to be used in css file
-        buttonPane = new TilePane();
-        buttonPane.setId("Buttons");    // assign an id to be used in css file
+        // 2) StackPane ensures the image stays centered
+        StackPane root = new StackPane();
+        root.getChildren().add(backgroundImageView);
 
-        // controls
-        title  = new Label();           // Message bar at the top for the title
-        grid.add( title, 0, 0);         // Add to GUI at the top
+        // 3) Create an AnchorPane to hold UI elements
+        AnchorPane uiLayer = new AnchorPane();
+        root.getChildren().add(uiLayer); // Add the UI layer above the background
 
-        message  = new TextField();     // text field for numbers and error messages
-        message.setEditable(false);     // Read only (user can't type in)
-        grid.add( message, 0, 1);       // Add to GUI on second row
+        // 4) ATM Screen (TextField for messages)
+        message = new TextField();
+        message.setEditable(false);
+        message.setId("atmScreenTop");
+        message.setPrefWidth(300);
+        message.setPrefHeight(40);
 
-        reply  = new TextArea();        // multi-line text area for instructions
-        reply.setEditable(false);       // Read only (user can't type in)
-        scrollPane  = new ScrollPane(); // create a scrolling window
-        scrollPane.setContent( reply ); // put the text area 'inside' the scrolling window
-        grid.add( scrollPane, 0, 2);    // add the scrolling window to GUI on third row
+        // 5) Reply area (TextArea inside ScrollPane)
+        reply = new TextArea();
+        reply.setEditable(false);
+        reply.setId("atmScreenMain");
+        scrollPane = new ScrollPane(reply);
+        scrollPane.setPrefSize(400, 250);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        // Buttons - these are laid out on a tiled pane, then
-        // the whole pane is added to the main grid as the fourth row
+        // 6) Adjust screen positions relative to ATM image
+        //Gur Task Week 4 version 1.0.1
+        AnchorPane.setTopAnchor(message, 150.0);
+        AnchorPane.setLeftAnchor(message, 280.0);
+        AnchorPane.setTopAnchor(scrollPane, 200.0);
+        AnchorPane.setLeftAnchor(scrollPane, 225.0);
 
-        // Button labels - empty strings are for blank spaces
-        // The number of button per row should match what is set in
-        // the css file
-        String labels[][] = {
-                {"7",    "8",  "9",  "",  "Dep",  ""},
-                {"4",    "5",  "6",  "",  "W/D",  ""},
-                {"1",    "2",  "3",  "",  "Bal",  "Fin"},
-                {"CLR",  "0",  "",   "",  "",     "Ent"} };
+        // 7) Create separate Keypads
+        //Gur Task Week 4 version 1.0.1
+        numPad = new TilePane();
+        numPad.setId("numPad");
+        numPad.setPrefColumns(3); // 3-column numeric keypad
+        numPad.setHgap(5);
+        numPad.setVgap(5);
 
-        // loop through the array, making a Button object for each label
-        // (and an empty text label for each blank space) and adding them to the buttonPane
-        // The number of button per row is set in the css file, not the array.
-        for ( String[] row: labels ) {
-            for (String label: row) {
-                if ( label.length() >= 1 ) {
-                    // non-empty string - make a button
-                    Button b = new Button( label );
-                    b.setOnAction( this::buttonClicked ); // set the method to call when pressed
-                    buttonPane.getChildren().add( b );    // and add to tiled pane
+        commandPad = new TilePane();
+        commandPad.setId("commandPad");
+        commandPad.setPrefColumns(1); // Adjust column count if needed
+        commandPad.setHgap(5);
+        commandPad.setVgap(20);
+
+        // 8) Populate Number Pad (0-9)
+        //Gur Task Week 4 version 1.0.1
+        String numberLabels[][] = {
+                {"7", "8", "9"},
+                {"4", "5", "6"},
+                {"1", "2", "3"},
+                {"CLR", "0", "Ent"}
+        };
+
+        for (String[] row : numberLabels) {
+            for (String label : row) {
+                if (label.length() >= 1) {
+                    Button b = new Button(label);
+                    b.setOnAction(this::buttonClicked);
+                    b.setPrefSize(60, 60); // Increase button size
+                    numPad.getChildren().add(b);
                 } else {
-                    // empty string - add an empty text element as a spacer
-                    buttonPane.getChildren().add( new Text() );
-
+                    numPad.getChildren().add(new Text()); // Spacer
                 }
             }
         }
-        grid.add(buttonPane,0,3); // add the tiled pane of buttons to the grid
 
-        // add the complete GUI to the window and display it
-        Scene scene = new Scene(grid, W, H);
-        scene.getStylesheets().add("atm.css"); // tell the app to use our css file
+        // 9) Populate Command Pad (Deposit, Withdraw, Balance, Finish)
+        String commandLabels[][] = {
+                {"Dep"},
+                {"Bal"},
+                {"W/D"},
+                {"Fin"}
+        };
+
+        for (String[] row : commandLabels) {
+            for (String label : row) {
+                if (label.length() >= 1) {
+                    Button b = new Button(label);
+                    b.setOnAction(this::buttonClicked);
+                    b.setPrefSize(50, 40); // Increase button size
+                    commandPad.getChildren().add(b);
+                } else {
+                    commandPad.getChildren().add(new Text()); // Spacer
+                }
+            }
+        }
+
+        // 10) Position Keypads on the ATM
+        //Gur Task Week 4 version 1.0.1
+        AnchorPane.setBottomAnchor(numPad, 95.0);  // Move numeric pad to bottom left
+        AnchorPane.setLeftAnchor(numPad, 190.0);
+
+        AnchorPane.setTopAnchor(commandPad, 200.0); // Move command buttons to top middle
+        AnchorPane.setLeftAnchor(commandPad, 660.0);
+
+        // Add all UI elements to the UI layer
+        uiLayer.getChildren().addAll(message, scrollPane, numPad, commandPad);
+
+        // 11) Scene and Window
+        Scene scene = new Scene(root, W, H);
+        scene.getStylesheets().add("atm.css");
+
+        // 12) Bind image size to window size (for proper scaling)
+        backgroundImageView.fitWidthProperty().bind(root.widthProperty());
+        backgroundImageView.fitHeightProperty().bind(root.heightProperty());
+
+        root.widthProperty().addListener((obs, oldVal, newVal) -> adjustElements(root.getWidth(), root.getHeight()));
+        root.heightProperty().addListener((obs, oldVal, newVal) -> adjustElements(root.getWidth(), root.getHeight()));
+
         window.setScene(scene);
+        window.setTitle("Bank ATM");
+        window.setResizable(false); // Ensures window cannot be resized by the user
         window.show();
     }
 
-    // This is how the View talks to the Controller
-    // This method is called when a button is pressed
-    // It fetches the label on the button and passes it to the controller's process method
+    /**
+     * Adjusts the layout positions of UI components dynamically when the window is resized.
+     * <p>
+     * This method recalculates the anchors for various UI elements based on the new window dimensions.
+     * </p>
+     *
+     * @param newWidth  The new width of the window.
+     * @param newHeight The new height of the window.
+     */
+    private void adjustElements(double newWidth, double newHeight) {
+        double widthRatio = newWidth / W;
+        double heightRatio = newHeight / H;
+
+        AnchorPane.setTopAnchor(message, 210.0 * heightRatio);
+        AnchorPane.setLeftAnchor(message, 315.0 * widthRatio);
+        AnchorPane.setTopAnchor(scrollPane, 265.0 * heightRatio);
+        AnchorPane.setLeftAnchor(scrollPane, 315.0 * widthRatio);
+        AnchorPane.setBottomAnchor(numPad, 100.0 * heightRatio);
+        AnchorPane.setLeftAnchor(numPad, 200.0 * widthRatio);
+        AnchorPane.setTopAnchor(commandPad, 120.0 * heightRatio);
+        AnchorPane.setLeftAnchor(commandPad, 380.0 * widthRatio);
+    }
+
+    /**
+     * Event handler for button click events in the ATM interface.
+     * <p>
+     * This method retrieves the button that was clicked, extracts its label, logs the event, and then
+     * passes the label to the controller for further processing.
+     * </p>
+     *
+     * @param event The ActionEvent triggered by a button click.
+     */
     public void buttonClicked(ActionEvent event) {
-        // this line asks the event to provide the actual Button object that was clicked
         Button b = ((Button) event.getSource());
-        if ( controller != null )
-        {
-            String label = b.getText();   // get the button label
-            Debug.trace( "View::buttonClicked: label = "+ label );
-            // Try setting a breakpoint here
-            controller.process( label );  // Pass it to the controller's process method
+        if (controller != null) {
+            String label = b.getText();
+            Debug.trace("View::buttonClicked: label = " + label);
+            controller.process(label);
         }
     }
 
-    // This is how the Model talks to the View
-    // This method gets called BY THE MODEL, whenever the model changes
-    // It fetches th title, display1 and display2 variables from the model
-    // and displays them in the GUI
-    public void update()
-    {
+    /**
+     * Updates the view's display elements based on the current state of the Model.
+     * <p>
+     * This method retrieves the latest display text from the Model and sets the text
+     * of the message TextField and reply TextArea accordingly.
+     * </p>
+     */
+    public void update() {
         if (model != null) {
-            Debug.trace( "View::update" );
-            String message1 = model.title;        // get the new title from the model
-            title.setText(message1);              // set the message text to be the title
-            String message2 = model.display1;     // get the new message1 from the model
-            message.setText( message2 );          // add it as text of GUI control output1
-            String message3 = model.display2;     // get the new message2 from the model
-            reply.setText( message3 );            // add it as text of GUI control output2
+            Debug.trace("View::update");
+            message.setText(model.display1);
+            reply.setText(model.display2);
         }
     }
 }
-

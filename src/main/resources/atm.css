@@ -1,17 +1,67 @@
+/* Layout Background Image */
+/*
+  This section handles the background image for the layout.
+  - The image is set not to repeat.
+  - It is centered in the layout.
+  - The background-size is set to "contain" to ensure the full image is always visible.
+  - The resizing and alteration of the picture was implemented by Gur, version 1.0.1.
+*/
 #Layout {
-    -fx-grid-lines-visible: false;
-    -fx-hgap: 5;
-    -fx-vgap: 5;
-    -fx-padding: 10;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: contain; /* Ensure full image is always visible */
 }
 
-#Buttons {
-    -fx-pref-columns: 6;
-    -fx-pref-tile-width: 75;
-    -fx-hgap: 5;
-    -fx-vgap: 5;
+/* ATM Screen Styling (TextField & TextArea) */
+/*
+  Styles for the ATM screen components.
+  - The top screen (#atmScreenTop) uses a blue gradient background with white text.
+  - It has rounded borders and a slight opacity for a polished look.
+  - The main screen (#atmScreenMain) is set to have a transparent background with black text.
+  - This modification was implemented by Gur, version 1.0.1.
+*/
+#atmScreenTop {
+    -fx-background-color: linear-gradient(to bottom, #003366, #0055AA);
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #222;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-opacity: 0.85;
+    -fx-font-weight: bold;
 }
 
-.button {
-    -fx-font: bold 16pt "courier new";
+#atmScreenMain {
+    -fx-background-color: transparent;  /* Makes background transparent */
+    -fx-text-fill: black;                /* Sets text color to black */
+}
+
+/* Keypad Styling */
+/*
+  Styles for the buttons within the keypad pane.
+  - Uses a 14pt Arial font for button labels.
+  - Buttons have a subtle linear gradient background and a light border.
+  - Rounded corners and padding provide a consistent, user-friendly appearance.
+*/
+#keypadPane .button {
+    -fx-font: 14pt "Arial";
+    -fx-background-color: linear-gradient(#CCCCCC, #AAAAAA);
+    -fx-border-color: #666;
+    -fx-border-radius: 4;
+    -fx-padding: 8 12;
+}
+
+/* Button Hover Effect */
+/*
+  Changes the background gradient of buttons when hovered to provide visual feedback.
+*/
+#keypadPane .button:hover {
+    -fx-background-color: linear-gradient(#EEEEEE, #BBBBBB);
+}
+
+/* Button Press Effect */
+/*
+  Alters the background gradient of buttons when pressed to simulate a click effect.
+*/
+#keypadPane .button:pressed {
+    -fx-background-color: linear-gradient(#AAAAAA, #888888);
 }

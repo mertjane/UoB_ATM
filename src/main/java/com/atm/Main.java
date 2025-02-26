@@ -3,16 +3,32 @@ package com.atm;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-// atm project Main class
-// The code here creates the ATM GUI interface and model functionality, but the methods
-// in the BankAccount class which actually do the banking functions are incomplete.
-// You need to complete the BankAccount - make log in, deposit, withdraw, checkBalance work
-// then add further functionality/fearures
-// Tutors may not help directly with coding but will give you guidance
-
+/**
+ * The Main class serves as the entry point for the ATM application.
+ * <p>
+ * This class extends the JavaFX {@code Application} class and is responsible for
+ * setting up the ATM's GUI interface, initializing the Model, View, and Controller
+ * components, and linking them together. The application follows the Model-View-Controller (MVC)
+ * architecture to separate concerns and improve maintainability.
+ * </p>
+ * <p>
+ * Note: The methods in the {@code BankAccount} class (such as login, deposit, withdraw,
+ * and checkBalance) are incomplete. You are required to complete these methods and add further
+ * functionality/features as needed. Tutors may provide guidance but cannot assist directly with coding.
+ * </p>
+ */
 public class Main extends Application
 {
 
+    /**
+     * Initializes and starts the ATM application GUI.
+     * <p>
+     * This method sets up debugging, creates a {@code Bank} object, adds test bank accounts,
+     * initializes the MVC components (Model, View, Controller), links them together, and displays the GUI.
+     * </p>
+     *
+     * @param window The primary stage where the application GUI will be displayed.
+     */
     public void start(Stage window)
     {
         // set up debugging and print initial debugging message
@@ -22,17 +38,20 @@ public class Main extends Application
 
         // Create a Bank object for this ATM
         Bank b = new Bank();
+
         // add some test bank accounts
-        b.addBankAccount(10001, 11111, 100);
-        b.addBankAccount(10002, 22222, 50);
+        // Gur Task Week 4 version 1.0.1
+        b.addBankAccount(new StudentAccount(00000, 00000, 0));
+        b.addBankAccount(new GoldAccount(11111, 11111, 0));
+        b.addBankAccount(new PlatinumAccount(22222, 22222, 0));
 
         // Create the Model, View and Controller objects
         Model model = new Model(b);   // the model needs the Bank object to 'talk to' the bank
-        View  view  = new View();
-        Controller controller  = new Controller();
+        View view = new View();
+        Controller controller = new Controller();
 
         // Link them together so they can talk to each other
-        // Each one has instances variable for the other two
+        // Each one has instance variables for the other two
         model.view = view;
         model.controller = controller;
 
@@ -42,20 +61,25 @@ public class Main extends Application
         view.model = model;
         view.controller = controller;
 
-        // start up the GUI (view), and then tell the model to initialise and display itself
+        // Start up the GUI (view), and then tell the model to initialize and display itself
         view.start(window);
         model.initialise("Welcome to the ATM");
         model.display();
 
-        // application is now running
+        // Application is now running
         Debug.trace("atm running");
     }
 
-    public static void main( String args[] )
+    /**
+     * The main method is the entry point when launching the application from the command line.
+     * <p>
+     * When running in an IDE like BlueJ, the {@code start} method may be invoked directly.
+     * </p>
+     *
+     * @param args Command-line arguments (not used).
+     */
+    public static void main(String args[])
     {
-        // The main method only gets used when launching from the command line
-        // launch initialises the system and then calls start
-        // In BlueJ, BlueJ calls start itself
         launch(args);
     }
 }
