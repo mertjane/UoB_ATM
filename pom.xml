@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Project configuration file for ATM System.
+ * 
+ * <p><strong>Modification History:</strong></p>
+ * <ul>
+ *   <li><strong>Version 2.0.2:</strong> Made by Bora
+ *     <ul>
+ *       <li>Updated JavaFX version to 23.0.1</li>
+ *       <li>Added TestFX dependencies for UI testing</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ * 
+ * @version 2.0.2
+ */
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -18,12 +35,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.6</version>
+            <version>23.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>17.0.6</version>
+            <version>23.0.1</version>
         </dependency>
 
         <dependency>
@@ -36,6 +53,18 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>4.0.17</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit</artifactId>
+            <version>4.0.17</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
