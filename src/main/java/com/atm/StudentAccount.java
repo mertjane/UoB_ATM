@@ -17,6 +17,8 @@ package com.atm;
  * Gur modified the entire account hierarchy in Task Week 4 (version 1.0.1), making the
  * {@code BankAccount} class abstract and setting up inheritance for the various account types,
  * including {@code StudentAccount}, to implement different account logics.
+ * <br>
+ * Bora modified constructor parameters from int to String in Week 5 (version 3.0.1)
  * </p>
  */
 public class StudentAccount extends BankAccount {
@@ -28,7 +30,7 @@ public class StudentAccount extends BankAccount {
      * @param accPasswd the account password.
      * @param balance   the initial balance of the account.
      */
-    public StudentAccount(int accNumber, int accPasswd, double balance) {
+    public StudentAccount(String accNumber, String accPasswd, double balance) {
         super(accNumber, accPasswd, balance);
     }
 

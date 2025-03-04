@@ -22,6 +22,12 @@ import static org.junit.Assert.*;
  *       <li>Enhanced JavaDoc documentation with detailed scenarios</li>
  *     </ul>
  *   </li>
+ *   <li><strong>Version 3.0.1 :</strong> Bora
+ *     <ul>
+ *       <li>Changed account credentials from int to String to support leading zeros</li>
+ *       <li>Updated test account creation to use String format</li>
+ *     </ul>
+ *   </li>
  * </ul>
  * 
  * <p>This test class focuses on the core functionality of each account type (Student, Gold, Platinum)
@@ -40,7 +46,7 @@ import static org.junit.Assert.*;
  * Commission is applied on both withdrawals and deposits.</p>
  * 
  * @author Original: Bora
- * @version 2.0.2
+ * @version 3.0.1
  * @since 2.0.2
  * @see BankAccount
  * @see StudentAccount
@@ -75,9 +81,9 @@ public class BankAccountTest {
      */
     @Before
     public void setUp() {
-        studentAccount = new StudentAccount(00000, 00000, 1000);  // Well above £150 limit
-        goldAccount = new GoldAccount(11111, 11111, 3000);        // Well above £2000 limit
-        platinumAccount = new PlatinumAccount(22222, 22222, 5000); // Well above £3000 limit
+        studentAccount = new StudentAccount("00000", "00000", 1000);  // Well above £150 limit
+        goldAccount = new GoldAccount("11111", "11111", 3000);        // Well above £2000 limit
+        platinumAccount = new PlatinumAccount("22222", "22222", 5000); // Well above £3000 limit
     }
 
     /**
@@ -102,7 +108,7 @@ public class BankAccountTest {
             studentAccount.withdraw(150));
         
         // Overdraft tests
-        studentAccount = new StudentAccount(00000, 00000, 100);
+        studentAccount = new StudentAccount("00000", "00000", 100);
         assertFalse("Should not allow overdraft", studentAccount.withdraw(101));
         assertTrue("Should allow withdrawal up to available balance", 
             studentAccount.withdraw(100));
@@ -153,7 +159,7 @@ public class BankAccountTest {
         assertFalse("Should not allow deposit of £2001", goldAccount.deposit(2001));
         
         // Overdraft tests
-        goldAccount = new GoldAccount(11111, 11111, 500);
+        goldAccount = new GoldAccount("11111", "11111", 500);
         assertTrue("Should allow withdrawal up to overdraft limit", goldAccount.withdraw(1000));
         assertEquals("Balance should be -£500.5 after withdrawal and commission", 
             -500.5, goldAccount.getBalance(), DELTA);
@@ -161,7 +167,7 @@ public class BankAccountTest {
             goldAccount.withdraw(500)); // Would exceed -£1000 limit
         
         // Additional commission test for clarity
-        goldAccount = new GoldAccount(11111, 11111, 100);
+        goldAccount = new GoldAccount("11111", "11111", 100);
         assertTrue("Should allow small withdrawal", goldAccount.withdraw(10));
         assertEquals("Balance should be £89.5 after £10 withdrawal and £0.5 commission",
             89.5, goldAccount.getBalance(), DELTA);
@@ -189,7 +195,7 @@ public class BankAccountTest {
             platinumAccount.withdraw(3000));
         
         // Overdraft tests
-        platinumAccount = new PlatinumAccount(22222, 22222, 1000);
+        platinumAccount = new PlatinumAccount("22222", "22222", 1000);
         assertTrue("Should allow withdrawal up to overdraft limit", 
             platinumAccount.withdraw(2000));  // Will result in -£1500 balance
         assertFalse("Should not allow exceeding overdraft limit of -£1500", 
@@ -200,7 +206,7 @@ public class BankAccountTest {
         assertTrue("Should allow deposit of £2000", platinumAccount.deposit(2000));
         
         // Commission test (should be 0.7)
-        platinumAccount = new PlatinumAccount(22222, 22222, 1000);
+        platinumAccount = new PlatinumAccount("22222", "22222", 1000);
         assertTrue(platinumAccount.withdraw(100));
         assertEquals("Should apply £0.7 commission", 
             899.3, platinumAccount.getBalance(), 0.01);

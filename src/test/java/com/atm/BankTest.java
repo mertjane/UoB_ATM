@@ -32,10 +32,17 @@ import org.junit.runners.JUnit4;
  *       <li>Enhanced session management validation</li>
  *     </ul>
  *   </li>
+ *   <li><strong>Version 3.0.1 :</strong> Bora
+ *     <ul>
+ *       <li>Changed account credentials from int to String to support leading zeros</li>
+ *       <li>Modified test account creation to use String credentials</li>
+ *       <li>Added leading zero support test</li>
+ *     </ul>
+ *   </li>
  * </ul>
  *
  * @author Original: Bora
- * @version 2.0.2
+ * @version 3.0.1
  * @since 2.0.2
  * @see Bank
  * @see BankAccount
@@ -54,9 +61,9 @@ public class BankTest {
     @Before
     public void setUp() {
         bank = new Bank();
-        bank.addBankAccount(new StudentAccount(00000, 00000, 1000));
-        bank.addBankAccount(new GoldAccount(11111, 11111, 2000));
-        bank.addBankAccount(new PlatinumAccount(22222, 22222, 3000));
+        bank.addBankAccount(new StudentAccount("00000", "00000", 1000));
+        bank.addBankAccount(new GoldAccount("11111", "11111", 2000));
+        bank.addBankAccount(new PlatinumAccount("22222", "22222", 3000));
     }
 
     /**
@@ -66,16 +73,16 @@ public class BankTest {
     @Test
     public void testAuthentication() {
         // Valid login tests
-        assertTrue("Should allow valid student account login", bank.login(00000, 00000));
+        assertTrue("Should allow valid student account login", bank.login("00000", "00000"));
         bank.logout();
-        assertTrue("Should allow valid gold account login", bank.login(11111, 11111));
+        assertTrue("Should allow valid gold account login", bank.login("11111", "11111"));
         
         // Invalid login tests
-        assertFalse("Should reject invalid account number", bank.login(99999, 00000));
-        assertFalse("Should reject invalid password", bank.login(00000, 99999));
+        assertFalse("Should reject invalid account number", bank.login("99999", "00000"));
+        assertFalse("Should reject invalid password", bank.login("00000", "99999"));
         
         // Session security tests
-        bank.login(00000, 00000);
+        bank.login("00000", "00000");
         bank.logout();
         assertFalse("Should prevent operations after logout", bank.withdraw(100));
         assertFalse("Should prevent balance check after logout", bank.getBalance() > 0);
@@ -89,20 +96,20 @@ public class BankTest {
     @Test
     public void testTransactionRouting() {
         // Student account transactions
-        bank.login(00000, 00000);
+        bank.login("00000", "00000");
         assertTrue("Should route deposit to student account", bank.deposit(100));
         assertEquals("Should track student account balance", 1100, bank.getBalance(), DELTA);
         bank.logout();
         
         // Gold account transactions
-        bank.login(11111, 11111);
+        bank.login("11111", "11111");
         assertTrue("Should route withdrawal to gold account", bank.withdraw(500));
         assertEquals("Should track gold account balance with commission", 
             1499.5, bank.getBalance(), DELTA);
         bank.logout();
         
         // Platinum account transactions
-        bank.login(22222, 22222);
+        bank.login("22222", "22222");
         assertTrue("Should route deposit to platinum account", bank.deposit(1000));
         assertEquals("Should track platinum account balance with commission", 
             3999.3, bank.getBalance(), DELTA);
@@ -116,21 +123,21 @@ public class BankTest {
     @Test
     public void testAccountOperations() {
         // Student account operations
-        bank.login(00000, 00000);
+        bank.login("00000", "00000");
         assertTrue("Should allow student account deposit", bank.deposit(100));
         assertEquals("Should update student account balance", 
             1100, bank.getBalance(), DELTA);
         bank.logout();
         
         // Gold account operations
-        bank.login(11111, 11111);
+        bank.login("11111", "11111");
         assertTrue("Should allow gold account withdrawal", bank.withdraw(500));
         assertEquals("Should update gold account balance with commission", 
             1499.5, bank.getBalance(), DELTA);
         bank.logout();
         
         // Platinum account operations
-        bank.login(22222, 22222);
+        bank.login("22222", "22222");
         assertTrue("Should allow platinum account deposit", bank.deposit(1000));
         assertEquals("Should update platinum account balance with commission", 
             3999.3, bank.getBalance(), DELTA);
@@ -148,7 +155,7 @@ public class BankTest {
     @Test
     public void testSessionSecurity() {
         // Initial transaction
-        bank.login(11111, 11111);
+        bank.login("11111", "11111");
         double initialBalance = bank.getBalance();
         assertTrue("Should complete withdrawal", bank.withdraw(500));
         assertEquals("Balance should be reduced by 500.5", 
@@ -156,25 +163,51 @@ public class BankTest {
         bank.logout();
         
         // Verify transaction persists after re-login
-        bank.login(11111, 11111);
+        bank.login("11111", "11111");
         assertEquals("Balance should remain updated after re-login", 
             initialBalance - 500.5, bank.getBalance(), DELTA);
         bank.logout();
         
         // Verify other account remains unaffected
-        bank.login(00000, 00000);
+        bank.login("00000", "00000");
         assertEquals("Student account should remain at initial balance", 
             1000, bank.getBalance(), DELTA);
         bank.logout();
         
         // Multiple session persistence test
-        bank.login(11111, 11111);
+        bank.login("11111", "11111");
         assertTrue("Should complete deposit", bank.deposit(200));
         double afterDeposit = bank.getBalance();
         bank.logout();
         
-        bank.login(11111, 11111);
+        bank.login("11111", "11111");
         assertEquals("Balance should reflect all transactions after multiple sessions", 
             afterDeposit, bank.getBalance(), DELTA);
+    }
+
+    /**
+     * Tests leading zero support in account credentials.
+     * Verifies that accounts with leading zeros in their credentials
+     * can be properly authenticated and accessed.
+     * <p>
+     * Week 5 - Bora - Version 3.0.1: Added to validate the leading zero support.
+     * </p>
+     */
+    @Test
+    public void testLeadingZeroSupport() {
+        // Create account with leading zeros
+        bank.addBankAccount(new StudentAccount("00123", "00456", 500));
+        
+        // Test login with leading zeros
+        assertTrue("Should authenticate with leading zeros", bank.login("00123", "00456"));
+        assertEquals("Should access correct account balance", 500, bank.getBalance(), DELTA);
+        
+        // Test that zeros are significant
+        bank.logout();
+        assertFalse("Should not authenticate if leading zeros are omitted", bank.login("123", "456"));
+        
+        // Test with different number of leading zeros
+        bank.logout();
+        assertFalse("Should not authenticate with incorrect number of zeros", bank.login("000123", "00456"));
     }
 } 

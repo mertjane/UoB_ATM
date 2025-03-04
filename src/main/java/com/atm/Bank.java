@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * - Mertcan Task 2 Update 2.0.0: Initial implementation for bank account management.<br>
  * - Gur Task Week 4 version 2.0.1: Modified the deposit, withdraw, getBalance, and getLastMessage methods
  *   to integrate updated account logic.
+ * - Bora Task Week 5 version 3.0.1: Modified the login method to use String parameters for account number and password.
  * </p>
  * <p>
  * Note: The {@code login} method is partially implemented as part of the lab exercise. Tutors can help with guidance.
@@ -81,31 +82,39 @@ public class Bank
      * <p>
      * Week 2 implementation by Mertcan, version 1.0.0.
      * </p>
+     * <p>
+     * Week 5 - Bora - Version 3.0.1: Modified parameter types from int to String to support leading zeros.
+     * </p>
      *
-     * @param newAccNumber the account number to log in.
-     * @param newAccPasswd the account password.
+     * @param accNumber the account number to log in.
+     * @param accPasswd the account password.
      * @return {@code true} if login is successful; {@code false} otherwise.
      */
-    public boolean login(int newAccNumber, int newAccPasswd)
-    {
-        Debug.trace("Bank::login: accNumber = " + newAccNumber);
+    public boolean login(String accNumber, String accPasswd) {
+        Debug.trace("Bank::login: accNumber = " + accNumber);
         logout(); // logout of any previous account
 
         // Iterate through all the bank accounts in the accounts list
         for (BankAccount account : accounts) {
-            // Check if the account number and password match the provided ones
-            if (account.getAccNumber() == newAccNumber && account.getAccPasswd() == newAccPasswd) {
+            /**
+             * Check if the account number and password match the provided ones.
+             * <p>
+             * Week 5 - Bora - Version 3.0.1: Changed from int comparison to String.equals() 
+             * to support leading zeros.
+             * </p>
+             */
+            if (account.getAccNumber().equals(accNumber) && account.getAccPasswd().equals(accPasswd)) {
                 // If a match is found, set the current account to the matched account
                 currentAccount = account;
                 // Log a message indicating the login was successful
-                Debug.trace("Bank::login: Login successful for account number: " + newAccNumber);
+                Debug.trace("Bank::login: Login successful for account number: " + accNumber);
                 // Return true to indicate that the login was successful
                 return true;
             }
         }
 
         // not found - return false
-        Debug.trace("Bank::login: Login failed for accNumber = " + newAccNumber);
+        Debug.trace("Bank::login: Login failed for accNumber = " + accNumber);
         currentAccount = null;
         return false;
     }

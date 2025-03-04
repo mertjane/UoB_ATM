@@ -40,11 +40,15 @@ public class Main extends Application
         Bank b = new Bank();
 
         // add some test bank accounts
-        // Gur Task Week 4 version 1.0.1
-        b.addBankAccount(new StudentAccount(00000, 00000, 0));
-        b.addBankAccount(new GoldAccount(11111, 11111, 0));
-        b.addBankAccount(new PlatinumAccount(22222, 22222, 0));
-
+        // Gur Task Week 4 version 1.0.1 - Bora (version 3.0.1) changed the account numbers to String to preserve leading zeros
+        b.addBankAccount(new StudentAccount("00000", "00000", 0));
+        b.addBankAccount(new GoldAccount("11111", "11111", 0));
+        b.addBankAccount(new PlatinumAccount("22222", "22222", 0));
+        // Bora added more test accounts to test leading zeros version 3.0.1
+        b.addBankAccount(new StudentAccount("00001", "00001", 100));
+        b.addBankAccount(new GoldAccount("00002", "00002", 200));
+        b.addBankAccount(new PlatinumAccount("00003", "00003", 300));
+       
         // Create the Model, View and Controller objects
         Model model = new Model(b);   // the model needs the Bank object to 'talk to' the bank
         View view = new View();

@@ -16,6 +16,8 @@ package com.atm;
  * <strong>Modification History:</strong><br>
  * Gur modified the entire account hierarchy in Task Week 4 (version 1.0.1), making the {@code BankAccount} class abstract,
  * setting up inheritance for various account types (including {@code PlatinumAccount}), and implementing different account logics.
+ * <br>
+ * Bora modified constructor parameters from int to String in Week 5 (version 3.0.1)
  * </p>
  */
 public class PlatinumAccount extends BankAccount {
@@ -27,7 +29,7 @@ public class PlatinumAccount extends BankAccount {
      * @param accPasswd the account password.
      * @param balance   the initial balance of the account.
      */
-    public PlatinumAccount(int accNumber, int accPasswd, double balance) {
+    public PlatinumAccount(String accNumber, String accPasswd, double balance) {
         super(accNumber, accPasswd, balance);
     }
 
