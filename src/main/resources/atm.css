@@ -1,67 +1,100 @@
-/* Layout Background Image */
-/*
-  This section handles the background image for the layout.
-  - The image is set not to repeat.
-  - It is centered in the layout.
-  - The background-size is set to "contain" to ensure the full image is always visible.
-  - The resizing and alteration of the picture was implemented by Gur, version 1.0.1.
-*/
-#Layout {
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: center;
-    -fx-background-size: contain; /* Ensure full image is always visible */
+/* Global Styling */
+.root {
+  -fx-background-color: #1A3C1A; /* Dark green for ATM body */
+  -fx-font-family: "Arial";
 }
 
-/* ATM Screen Styling (TextField & TextArea) */
-/*
-  Styles for the ATM screen components.
-  - The top screen (#atmScreenTop) uses a blue gradient background with white text.
-  - It has rounded borders and a slight opacity for a polished look.
-  - The main screen (#atmScreenMain) is set to have a transparent background with black text.
-  - This modification was implemented by Gur, version 1.0.1.
-*/
+/* Main Layout */
+.border-pane {
+  -fx-background-color: #E6ECE6; /* Light gray for ATM panel */
+  -fx-border-color: #666;
+  
+  
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+}
+
+/* ATM Screen Styling */
 #atmScreenTop {
-    -fx-background-color: linear-gradient(to bottom, #003366, #0055AA);
-    -fx-text-fill: #FFFFFF;
-    -fx-border-color: #222;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
-    -fx-opacity: 0.85;
-    -fx-font-weight: bold;
+  -fx-background-color: linear-gradient(to bottom, #003366, #0055AA);
+  -fx-text-fill: white;
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-padding: 15px;
+  -fx-alignment: center;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);
+  -fx-pref-width: 100%;
+  -fx-min-height: 50px;
 }
 
 #atmScreenMain {
-    -fx-background-color: transparent;  /* Makes background transparent */
-    -fx-text-fill: black;                /* Sets text color to black */
+  -fx-background-color: #FFFFFF; /* White for screen content */
+  -fx-text-fill: #1A3C1A;
+  -fx-font-size: 16px;
+  -fx-padding: 20px;
+ 
+  
+  -fx-border-color: #666;
+  -fx-border-width: 1px;
+  -fx-effect: innershadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+  -fx-pref-width: 100%;
+  -fx-min-height: 200px;
+  -fx-max-height: 400px;
 }
 
-/* Keypad Styling */
-/*
-  Styles for the buttons within the keypad pane.
-  - Uses a 14pt Arial font for button labels.
-  - Buttons have a subtle linear gradient background and a light border.
-  - Rounded corners and padding provide a consistent, user-friendly appearance.
-*/
-#keypadPane .button {
-    -fx-font: 14pt "Arial";
-    -fx-background-color: linear-gradient(#CCCCCC, #AAAAAA);
-    -fx-border-color: #666;
-    -fx-border-radius: 4;
-    -fx-padding: 8 12;
+/* Numeric Keypad Buttons */
+#numPad .button {
+  -fx-background-color: linear-gradient(#4A4A4A, #2D2D2D);
+  -fx-text-fill: white;
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-border-color: #666;
+  -fx-border-width: 1px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);
 }
 
-/* Button Hover Effect */
-/*
-  Changes the background gradient of buttons when hovered to provide visual feedback.
-*/
-#keypadPane .button:hover {
-    -fx-background-color: linear-gradient(#EEEEEE, #BBBBBB);
+#numPad .button:hover {
+  -fx-background-color: linear-gradient(#5A5A5A, #3D3D3D);
+  -fx-cursor: hand;
 }
 
-/* Button Press Effect */
-/*
-  Alters the background gradient of buttons when pressed to simulate a click effect.
-*/
-#keypadPane .button:pressed {
-    -fx-background-color: linear-gradient(#AAAAAA, #888888);
+#numPad .button:pressed {
+  -fx-background-color: linear-gradient(#2D2D2D, #1A1A1A);
+  -fx-effect: innershadow(gaussian, rgba(255,255,255,0.2), 5, 0, 0, 1);
+}
+
+/* Command Buttons */
+#commandPad .button {
+  -fx-background-color: linear-gradient(to right, #006600, #008800);
+  -fx-text-fill: white;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-border-color: #004400;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);
+}
+
+#commandPad .button:hover {
+  -fx-background-color: linear-gradient(to right, #008800, #00AA00);
+  -fx-cursor: hand;
+}
+
+#commandPad .button:pressed {
+  -fx-background-color: linear-gradient(to right, #004400, #006600);
+  -fx-effect: innershadow(gaussian, rgba(255,255,255,0.2), 5, 0, 0, 1);
+}
+
+/* ScrollPane Styling */
+.scroll-pane {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+  -fx-background-color: transparent;
 }
