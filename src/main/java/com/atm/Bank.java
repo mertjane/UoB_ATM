@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * - Gur Task Week 4 version 2.0.1: Modified the deposit, withdraw, getBalance, and getLastMessage methods
  *   to integrate updated account logic.
  * - Bora Task Week 5 version 3.0.1: Modified the login method to use String parameters for account number and password.
+ * - Bora Task Week 5 version 3.0.2: Added changePassword method to support password changing functionality.
  * </p>
  * <p>
  * Note: The {@code login} method is partially implemented as part of the lab exercise. Tutors can help with guidance.
@@ -207,5 +208,31 @@ public class Bank
     public String getLastMessage()
     {
         return currentAccount.getLastMessage();
+    }
+
+    /**
+     * Changes the password for the currently logged-in account.
+     * <p>
+     * This method updates the password of the currently logged-in account if the
+     * provided account number matches the current account.
+     * </p>
+     * <p>
+     * Week 5 - Made by Bora - Version 3.0.2: Added change password functionality
+     * </p>
+     *
+     * @param accNumber The account number to verify
+     * @param newPassword The new password to set
+     * @return {@code true} if the password was changed successfully; {@code false} otherwise
+     */
+    public boolean changePassword(String accNumber, String newPassword)
+    {
+        if (loggedIn() && currentAccount.getAccNumber().equals(accNumber))
+        {
+            currentAccount.setAccPasswd(newPassword);
+            Debug.trace("Bank::changePassword: Password changed for account " + accNumber);
+            return true;
+        }
+        Debug.trace("Bank::changePassword: Failed to change password for account " + accNumber);
+        return false;
     }
 }

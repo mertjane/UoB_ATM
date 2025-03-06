@@ -12,7 +12,10 @@ package com.atm;
  * <strong>Modification History:</strong><br>
  * Gur modified the entire class in Task Week 4 (version 1.0.1), made it abstract, set up inheritance for other
  * account classes, and implemented different account logics for deposit, withdrawal, limits, and commissions.
+ * <br>
  * Bora modified the class in Task Week 5 (version 3.0.1), changed the account number and password to String to preserve leading zeros.
+ * <br>
+ * Bora modified the class in Task Week 5 (version 3.0.2), added setAccPasswd method to support password changing functionality.
  * </p>
  */
 public abstract class BankAccount {
@@ -197,5 +200,20 @@ public abstract class BankAccount {
      */
     protected String getAccPasswd() {
         return accPasswd;
+    }
+
+    /**
+     * Sets a new password for this account.
+     * <p>
+     * This method allows changing the account password for security purposes.
+     * </p>
+     * <p>
+     * Week 5 - Made by Bora - Version 3.0.2: Added change password functionality
+     * </p>
+     *
+     * @param newPassword the new password to set for the account.
+     */
+    protected void setAccPasswd(String newPassword) {
+        this.accPasswd = newPassword;
     }
 }

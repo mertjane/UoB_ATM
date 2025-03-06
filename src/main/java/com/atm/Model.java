@@ -20,6 +20,11 @@ package com.atm;
  * - Updated processNumber to preserve leading zeros in display
  * - Modified processEnter to handle empty inputs
  * - Changed state management in initialise method
+ * <br>
+ * Bora modified in Week 5 (version 3.0.2):
+ * - Added Change Password functionality
+ * - Added password length validation (4-5 digits)
+ * - Implemented password confirmation workflow
  * </p>
  */
 public class Model
@@ -30,6 +35,16 @@ public class Model
     final String PASSWORD = "password";
     /** Constant for the "logged_in" state. */
     final String LOGGED_IN = "logged_in";
+    /** Constant for the "change_password" state. */
+    final String CHANGE_PASSWORD = "change_password";
+    /** Constant for the "confirm_password" state. */
+    final String CONFIRM_PASSWORD = "confirm_password";
+
+    /**Minimum required length for account passwords*/
+    private static final int MIN_PASSWORD_LENGTH = 4;
+
+    /** Maximum allowed length for account passwords*/
+    private static final int MAX_PASSWORD_LENGTH = 5;
 
     // Model state variables
     /** The current state of the ATM model. */
@@ -208,6 +223,59 @@ public class Model
                     initialise("Unknown account/password");
                 }
                 break;
+            
+            /** Week 5 - Made by Bora - Version 3.0.2: Added change password functionality
+            */
+            case CHANGE_PASSWORD:
+                // Store the new password and ask for confirmation
+                String newPassword = display1.isEmpty() ? "0" : display1;
+                
+                // Validate password length
+                if (newPassword.length() < MIN_PASSWORD_LENGTH || newPassword.length() > MAX_PASSWORD_LENGTH) {
+                    display1 = "";
+                    display2 = "Password must be " + MIN_PASSWORD_LENGTH + " to " + MAX_PASSWORD_LENGTH + " digits\n" +
+                            "Enter your new password\n" +
+                            "Followed by \"Ent\"";
+                } else {
+                    accPasswd = newPassword;
+                    setState(CONFIRM_PASSWORD);
+                    display1 = "";
+                    display2 = "Confirm your new password\n" +
+                            "Followed by \"Ent\"";
+                }
+                break;
+                
+            case CONFIRM_PASSWORD:
+                // Check if the confirmation matches
+                String confirmPassword = display1.isEmpty() ? "0" : display1;
+                if (confirmPassword.equals(accPasswd))
+                {
+                    // Passwords match, update the password
+                    if (bank.changePassword(accNumber, accPasswd))
+                    {
+                        setState(LOGGED_IN);
+                        display1 = "";
+                        display2 = "Password changed successfully\n" +
+                                "Now enter the transaction you require";
+                    }
+                    else
+                    {
+                        setState(LOGGED_IN);
+                        display1 = "";
+                        display2 = "Password change failed\n" +
+                                "Now enter the transaction you require";
+                    }
+                }
+                else
+                {
+                    // Passwords don't match
+                    setState(CHANGE_PASSWORD);
+                    display1 = "";
+                    display2 = "Passwords do not match\n" +
+                            "Enter your new password again\n" +
+                            "Followed by \"Ent\"";
+                }
+                break;
                 
             case LOGGED_IN:
             default:
@@ -345,5 +413,31 @@ public class Model
     {
         Debug.trace("Model::display");
         view.update();
+    }
+
+    /**
+     * Initiates the password change process.
+     * <p>
+     * If the user is logged in, this method transitions to the change password state
+     * and prompts the user to enter a new password. If not logged in, it displays
+     * an error message.
+     * </p>
+     * Week 5 - Made by Bora - Version 3.0.2: Added change password functionality
+     */
+    public void processChangePassword()
+    {
+        if (state.equals(LOGGED_IN))
+        {
+            setState(CHANGE_PASSWORD);
+            number = 0;
+            display1 = "";
+            display2 = "Enter your new password\n" +
+                    "Followed by \"Ent\"";
+        }
+        else
+        {
+            initialise("You are not logged in");
+        }
+        display();
     }
 }

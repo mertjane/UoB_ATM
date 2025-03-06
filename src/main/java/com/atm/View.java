@@ -24,6 +24,9 @@ import javafx.stage.Stage;
  * </p>
  * <p>
  * Version and Task Info: Gur Task Week 4 version 1.0.1
+ * <br>
+ * Bora modified in Week 5 (version 3.0.2):
+ * - Added Change Password button to the interface
  * </p>
  */
 class View {
@@ -172,6 +175,21 @@ class View {
             }
         }
 
+        // Bora Task Week 5 version 3.0.2
+        // Create a new TilePane for additional buttons (Change Password and New Account)
+        TilePane extraPad = new TilePane();
+        extraPad.setId("extraPad");
+        extraPad.setPrefColumns(1); // Single column layout
+        extraPad.setHgap(5);
+        extraPad.setVgap(20);
+
+        // Bora Task Week 5 version 3.0.2
+        // Add Change Password button
+        Button chpButton = new Button("ChP");
+        chpButton.setOnAction(this::buttonClicked);
+        chpButton.setPrefSize(50, 40);
+        extraPad.getChildren().add(chpButton);
+
         // 10) Position Keypads on the ATM
         //Gur Task Week 4 version 1.0.1
         AnchorPane.setBottomAnchor(numPad, 95.0);  // Move numeric pad to bottom left
@@ -180,8 +198,13 @@ class View {
         AnchorPane.setTopAnchor(commandPad, 200.0); // Move command buttons to top middle
         AnchorPane.setLeftAnchor(commandPad, 660.0);
 
+        //Bora Task Week 5 version 3.0.2
+        // Position the extra pad (opposite to command pad)
+        AnchorPane.setTopAnchor(extraPad, 200.0);
+        AnchorPane.setLeftAnchor(extraPad, 120.0);
+
         // Add all UI elements to the UI layer
-        uiLayer.getChildren().addAll(message, scrollPane, numPad, commandPad);
+        uiLayer.getChildren().addAll(message, scrollPane, numPad, commandPad, extraPad);
 
         // 11) Scene and Window
         Scene scene = new Scene(root, W, H);

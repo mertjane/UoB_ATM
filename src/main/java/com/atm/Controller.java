@@ -4,6 +4,19 @@ package com.atm;
 // The ATM controller is quite simple - the process method is passed
 // the label on the button that was pressed, and it calls different
 // methods in the model depending what was pressed.
+/**
+ * The Controller class handles user interactions from the View and directs them to the Model.
+ * <p>
+ * This class follows the Model-View-Controller (MVC) design pattern, acting as an intermediary
+ * between the View (user interface) and the Model (business logic). It processes button clicks
+ * from the View and calls appropriate methods in the Model.
+ * </p>
+ * <p>
+ * <strong>Modification History:</strong><br>
+ * Bora modified in Week 5 (version 3.0.2):
+ * - Added support for Change Password button
+ * </p>
+ */
 public class Controller
 {
     public Model model;
@@ -46,6 +59,9 @@ public class Controller
                 break;
             case "Fin":
                 model.processFinish();
+                break;
+            case "ChP":
+                model.processChangePassword();
                 break;
             default:
                 model.processUnknownKey(action);
