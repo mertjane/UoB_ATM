@@ -189,6 +189,13 @@ class View {
         chpButton.setOnAction(this::buttonClicked);
         chpButton.setPrefSize(50, 40);
         extraPad.getChildren().add(chpButton);
+        
+        // Bora Week 5 version 3.0.3: Added New Account button
+        // Add New Account button
+        Button newButton = new Button("New");
+        newButton.setOnAction(this::buttonClicked);
+        newButton.setPrefSize(50, 40);
+        extraPad.getChildren().add(newButton);
 
         // 10) Position Keypads on the ATM
         //Gur Task Week 4 version 1.0.1
@@ -201,7 +208,7 @@ class View {
         //Bora Task Week 5 version 3.0.2
         // Position the extra pad (opposite to command pad)
         AnchorPane.setTopAnchor(extraPad, 200.0);
-        AnchorPane.setLeftAnchor(extraPad, 120.0);
+        AnchorPane.setLeftAnchor(extraPad, 140.0);
 
         // Add all UI elements to the UI layer
         uiLayer.getChildren().addAll(message, scrollPane, numPad, commandPad, extraPad);

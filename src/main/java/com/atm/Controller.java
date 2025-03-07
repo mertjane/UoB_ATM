@@ -13,8 +13,9 @@ package com.atm;
  * </p>
  * <p>
  * <strong>Modification History:</strong><br>
- * Bora modified in Week 5 (version 3.0.2):
- * - Added support for Change Password button
+ * Bora modified in Week 5 :
+ * - Added support for Change Password button (version 3.0.2)
+ * - Added support for New Account button (version 3.0.3)
  * </p>
  */
 public class Controller
@@ -62,6 +63,9 @@ public class Controller
                 break;
             case "ChP":
                 model.processChangePassword();
+                break;
+            case "New":
+                model.processNewAccount();
                 break;
             default:
                 model.processUnknownKey(action);

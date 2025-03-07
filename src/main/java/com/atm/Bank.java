@@ -235,4 +235,38 @@ public class Bank
         Debug.trace("Bank::changePassword: Failed to change password for account " + accNumber);
         return false;
     }
+
+    /**
+     * Creates a new account with the specified account number and password.
+     * <p>
+     * This method checks if the account number is unique, and if so, creates a new
+     * StudentAccount with the provided credentials and adds it to the bank.
+     * </p>
+     * <p>
+     * Bora Week 5 version 3.0.3: Added new account creation functionality
+     * </p>
+     *
+     * @param accNumber The account number for the new account
+     * @param accPasswd The password for the new account
+     * @return {@code true} if the account was created successfully; {@code false} otherwise
+     */
+    public boolean createNewAccount(String accNumber, String accPasswd)
+    {
+        // Check if the account number already exists
+        for (BankAccount account : accounts)
+        {
+            if (account.getAccNumber().equals(accNumber))
+            {
+                Debug.trace("Bank::createNewAccount: Account number already exists: " + accNumber);
+                return false;
+            }
+        }
+        
+        // Create a new StudentAccount (default account type for new users)
+        BankAccount newAccount = new StudentAccount(accNumber, accPasswd, 0);
+        accounts.add(newAccount);
+        numAccounts++;
+        Debug.trace("Bank::createNewAccount: Created new account: " + accNumber);
+        return true;
+    }
 }

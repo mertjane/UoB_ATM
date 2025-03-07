@@ -39,6 +39,12 @@ public class Model
     final String CHANGE_PASSWORD = "change_password";
     /** Constant for the "confirm_password" state. */
     final String CONFIRM_PASSWORD = "confirm_password";
+    /** Constant for the "new_account" state. */
+    final String NEW_ACCOUNT = "new_account";
+    /** Constant for the "new_account_password" state. */
+    final String NEW_ACCOUNT_PASSWORD = "new_account_password";
+    /** Constant for the "confirm_new_password" state. */
+    final String CONFIRM_NEW_PASSWORD = "confirm_new_password";
 
     /**Minimum required length for account passwords*/
     private static final int MIN_PASSWORD_LENGTH = 4;
@@ -223,9 +229,11 @@ public class Model
                     initialise("Unknown account/password");
                 }
                 break;
-            
-            /** Week 5 - Made by Bora - Version 3.0.2: Added change password functionality
-            */
+
+            /**
+             * Week 5 - Bora - Version 3.0.2:
+             * - Added change password functionality
+             */
             case CHANGE_PASSWORD:
                 // Store the new password and ask for confirmation
                 String newPassword = display1.isEmpty() ? "0" : display1;
@@ -273,6 +281,74 @@ public class Model
                     display1 = "";
                     display2 = "Passwords do not match\n" +
                             "Enter your new password again\n" +
+                            "Followed by \"Ent\"";
+                }
+                break;
+                
+            /**
+             * Week 5 - Bora - Version 3.0.3:
+             * - Added new account creation functionality
+             */
+            case NEW_ACCOUNT:
+                // Store the new account number and ask for password
+                String newAccNumber = display1.isEmpty() ? "0" : display1;
+                
+                // Validate account number length (should be 5 digits)
+                if (newAccNumber.length() != 5) {
+                    display1 = "";
+                    display2 = "Account number must be 5 digits\n" +
+                            "Enter new account number\n" +
+                            "Followed by \"Ent\"";
+                } else {
+                    accNumber = newAccNumber;
+                    setState(NEW_ACCOUNT_PASSWORD);
+                    display1 = "";
+                    display2 = "Enter password for new account\n" +
+                            "Followed by \"Ent\"";
+                }
+                break;
+                
+            case NEW_ACCOUNT_PASSWORD:
+                // Store the new account password and ask for confirmation
+                String newAccPassword = display1.isEmpty() ? "0" : display1;
+                
+                // Validate password length
+                if (newAccPassword.length() < MIN_PASSWORD_LENGTH || newAccPassword.length() > MAX_PASSWORD_LENGTH) {
+                    display1 = "";
+                    display2 = "Password must be " + MIN_PASSWORD_LENGTH + " to " + MAX_PASSWORD_LENGTH + " digits\n" +
+                            "Enter password for new account\n" +
+                            "Followed by \"Ent\"";
+                } else {
+                    accPasswd = newAccPassword;
+                    setState(CONFIRM_NEW_PASSWORD);
+                    display1 = "";
+                    display2 = "Confirm your password\n" +
+                            "Followed by \"Ent\"";
+                }
+                break;
+                
+            case CONFIRM_NEW_PASSWORD:
+                // Check if the confirmation matches
+                String confirmNewPassword = display1.isEmpty() ? "0" : display1;
+                if (confirmNewPassword.equals(accPasswd))
+                {
+                    // Passwords match, create the account
+                    if (bank.createNewAccount(accNumber, accPasswd))
+                    {
+                        initialise("Account created successfully\nPlease login");
+                    }
+                    else
+                    {
+                        initialise("Account creation failed\nTry a different account number");
+                    }
+                }
+                else
+                {
+                    // Passwords don't match
+                    setState(NEW_ACCOUNT_PASSWORD);
+                    display1 = "";
+                    display2 = "Passwords do not match\n" +
+                            "Enter password for new account again\n" +
                             "Followed by \"Ent\"";
                 }
                 break;
@@ -438,6 +514,26 @@ public class Model
         {
             initialise("You are not logged in");
         }
+        display();
+    }
+
+    /**
+     * Initiates the new account creation process.
+     * <p>
+     * This method transitions to the new account state and prompts the user
+     * to enter a new account number.
+     * </p>
+     * <p>
+     * Bora Week 5 version 3.0.3: Added new account creation functionality
+     * </p>
+     */
+    public void processNewAccount()
+    {
+        setState(NEW_ACCOUNT);
+        number = 0;
+        display1 = "";
+        display2 = "Enter new account number\n" +
+                "Followed by \"Ent\"";
         display();
     }
 }
