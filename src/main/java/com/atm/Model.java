@@ -8,23 +8,25 @@ package com.atm;
  * the Model instructs the View to update the display.
  * </p>
  * <p>
- * The Model operates in one of three states:
+ * The Model operates in one of these states:
  * <ul>
  *   <li>{@code ACCOUNT_NO}: Waiting for the user to enter an account number.</li>
  *   <li>{@code PASSWORD}: Waiting for the user to enter a password.</li>
  *   <li>{@code LOGGED_IN}: The user is logged in and can perform transactions.</li>
+ *   <li>{@code CHANGE_PASSWORD}: User is changing their password.</li>
+ *   <li>{@code CONFIRM_PASSWORD}: Waiting for password confirmation during change.</li>
+ *   <li>{@code SELECT_ACCOUNT_TYPE}: User is selecting account type for new account.</li>
+ *   <li>{@code NEW_ACCOUNT_PASSWORD}: Setting password for new account.</li>
+ *   <li>{@code CONFIRM_NEW_PASSWORD}: Confirming password for new account.</li>
  * </ul>
- *<strong>Modification History:</strong><br>
- * Bora modified in Week 5 (version 3.0.1):
- * - Changed credential handling from int to String to support leading zeros
- * - Updated processNumber to preserve leading zeros in display
- * - Modified processEnter to handle empty inputs
- * - Changed state management in initialise method
- * <br>
- * Bora modified in Week 5 (version 3.0.2):
- * - Added Change Password functionality
- * - Added password length validation (4-5 digits)
- * - Implemented password confirmation workflow
+ * </p>
+ * 
+ * <p><strong>Modification History:</strong><br>
+ * Bora modified in Week 5:
+ * - version 3.0.1: Enhanced credential handling with String support for leading zeros
+ * - version 3.0.2: Added Change Password functionality with validation
+ * - version 3.0.3: Implemented Create New Account with account type selection
+ * - version 3.0.4: Streamlined account creation workflow with AccountCreator service
  * </p>
  */
 public class Model
@@ -39,8 +41,8 @@ public class Model
     final String CHANGE_PASSWORD = "change_password";
     /** Constant for the "confirm_password" state. */
     final String CONFIRM_PASSWORD = "confirm_password";
-    /** Constant for the "new_account" state. */
-    final String NEW_ACCOUNT = "new_account";
+    /** Constant for the "select_account_type" state. */
+    final String SELECT_ACCOUNT_TYPE = "select_account_type";
     /** Constant for the "new_account_password" state. */
     final String NEW_ACCOUNT_PASSWORD = "new_account_password";
     /** Constant for the "confirm_new_password" state. */
@@ -79,6 +81,9 @@ public class Model
     public View view;
     /** The Controller associated with this Model. */
     public Controller controller;
+
+    /** Selected account type for new account creation */
+    private String selectedAccountType = "student";
 
     /**
      * Constructs a Model instance that interacts with the specified Bank.
@@ -289,23 +294,33 @@ public class Model
              * Week 5 - Bora - Version 3.0.3:
              * - Added new account creation functionality
              */
-            case NEW_ACCOUNT:
-                // Store the new account number and ask for password
-                String newAccNumber = display1.isEmpty() ? "0" : display1;
-                
-                // Validate account number length (should be 5 digits)
-                if (newAccNumber.length() != 5) {
-                    display1 = "";
-                    display2 = "Account number must be 5 digits\n" +
-                            "Enter new account number\n" +
-                            "Followed by \"Ent\"";
-                } else {
-                    accNumber = newAccNumber;
-                    setState(NEW_ACCOUNT_PASSWORD);
-                    display1 = "";
-                    display2 = "Enter password for new account\n" +
-                            "Followed by \"Ent\"";
+            case SELECT_ACCOUNT_TYPE:
+                // Process account type selection
+                String choice = display1.isEmpty() ? "0" : display1;
+                switch (choice) {
+                    case "1":
+                        selectedAccountType = AccountCreator.STUDENT_ACCOUNT;
+                        break;
+                    case "2":
+                        selectedAccountType = AccountCreator.GOLD_ACCOUNT;
+                        break;
+                    case "3":
+                        selectedAccountType = AccountCreator.PLATINUM_ACCOUNT;
+                        break;
+                    default:
+                        display1 = "";
+                        display2 = "Invalid choice. Please select:\n" +
+                                "1 - Student\n" +
+                                "2 - Gold\n" +
+                                "3 - Platinum\n" +
+                                "Enter choice followed by \"Ent\"";
+                        return;
                 }
+                
+                setState(NEW_ACCOUNT_PASSWORD);
+                display1 = "";
+                display2 = "Enter password for new " + selectedAccountType + " account\n" +
+                        "Followed by \"Ent\"";
                 break;
                 
             case NEW_ACCOUNT_PASSWORD:
@@ -332,14 +347,14 @@ public class Model
                 String confirmNewPassword = display1.isEmpty() ? "0" : display1;
                 if (confirmNewPassword.equals(accPasswd))
                 {
-                    // Passwords match, create the account
-                    if (bank.createNewAccount(accNumber, accPasswd))
-                    {
-                        initialise("Account created successfully\nPlease login");
-                    }
-                    else
-                    {
-                        initialise("Account creation failed\nTry a different account number");
+                    // Passwords match, create the account with selected type
+                    String newAccountNumber = bank.createNewAccount(selectedAccountType, accPasswd);
+                    if (newAccountNumber != null) {
+                        initialise("Account created successfully\n" +
+                                "Your account number is: " + newAccountNumber + "\n" +
+                                "Please login");
+                    } else {
+                        initialise("Account creation failed\nPlease try again");
                     }
                 }
                 else
@@ -520,20 +535,22 @@ public class Model
     /**
      * Initiates the new account creation process.
      * <p>
-     * This method transitions to the new account state and prompts the user
-     * to enter a new account number.
+     * This method transitions to the account type selection state and prompts
+     * the user to select an account type (Student, Gold, or Platinum).
      * </p>
      * <p>
-     * Bora Week 5 version 3.0.3: Added new account creation functionality
+     * Bora Week 5 version 3.0.4: Updated to start with account type selection
      * </p>
      */
-    public void processNewAccount()
-    {
-        setState(NEW_ACCOUNT);
+    public void processNewAccount() {
+        setState(SELECT_ACCOUNT_TYPE);
         number = 0;
         display1 = "";
-        display2 = "Enter new account number\n" +
-                "Followed by \"Ent\"";
+        display2 = "Select account type:\n" +
+                "1 - Student\n" +
+                "2 - Gold\n" +
+                "3 - Platinum\n" +
+                "Enter choice followed by \"Ent\"";
         display();
     }
 }

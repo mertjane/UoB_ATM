@@ -52,25 +52,46 @@ public class Bank
     */
 
     /**
-     * Adds a new bank account to the bank.
+     * Checks if an account with the given account number exists.
      * <p>
-     * The method returns {@code true} if the account is added successfully, or {@code false} if the bank is full.
+     * Bora Week 5 version 3.0.4: Added to support unique account number generation
      * </p>
-     *
-     * @param account the {@link BankAccount} to add.
-     * @return {@code true} if the account was added; {@code false} otherwise.
+     * 
+     * @param accNumber The account number to check
+     * @return true if an account with the given number exists, false otherwise
+     */
+    public boolean accountExists(String accNumber) {
+        for (BankAccount account : accounts) {
+            if (account.getAccNumber().equals(accNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds a bank account to the bank.
+     * <p>
+     * Bora Week 5 version 3.0.4: Added to support account creation
+     * </p>
+     * 
+     * @param account The bank account to add
+     * @return true if the account was added successfully, false otherwise
      */
     public boolean addBankAccount(BankAccount account) {
+        if (accountExists(account.getAccNumber())) {
+            return false;
+        }
         if (numAccounts < maxAccounts) {
             accounts.add(account);
             numAccounts++;
-            Debug.trace("Bank::addBankAccount: added " +
-                    account.accNumber + " " + account.accPasswd + " £" + account.balance);
+            Debug.trace("Bank::addBankAccount: Added account " + account.getAccNumber());
             return true;
         } else {
             Debug.trace("Bank::addBankAccount: can't add bank account - too many accounts");
             return false;
         }
+        
     }
 
     /**
@@ -237,36 +258,20 @@ public class Bank
     }
 
     /**
-     * Creates a new account with the specified account number and password.
+     * Creates a new account with the specified account type and password.
      * <p>
-     * This method checks if the account number is unique, and if so, creates a new
-     * StudentAccount with the provided credentials and adds it to the bank.
+     * This method delegates to the AccountCreator to create a new account
+     * with a randomly generated account number.
      * </p>
      * <p>
-     * Bora Week 5 version 3.0.3: Added new account creation functionality
+     * Bora Week 5 version 3.0.4: Simplified to use AccountCreator service
      * </p>
      *
-     * @param accNumber The account number for the new account
-     * @param accPasswd The password for the new account
-     * @return {@code true} if the account was created successfully; {@code false} otherwise
+     * @param accountType The type of account to create (student, gold, platinum)
+     * @param password The password for the new account
+     * @return The account number of the newly created account, or null if creation failed
      */
-    public boolean createNewAccount(String accNumber, String accPasswd)
-    {
-        // Check if the account number already exists
-        for (BankAccount account : accounts)
-        {
-            if (account.getAccNumber().equals(accNumber))
-            {
-                Debug.trace("Bank::createNewAccount: Account number already exists: " + accNumber);
-                return false;
-            }
-        }
-        
-        // Create a new StudentAccount (default account type for new users)
-        BankAccount newAccount = new StudentAccount(accNumber, accPasswd, 0);
-        accounts.add(newAccount);
-        numAccounts++;
-        Debug.trace("Bank::createNewAccount: Created new account: " + accNumber);
-        return true;
+    public String createNewAccount(String accountType, String password) {
+        return AccountCreator.createAccount(this, accountType, password);
     }
 }
