@@ -61,10 +61,10 @@ public class Controller
             case "Fin":
                 model.processFinish();
                 break;
-            case "ChP":
+            case "Change PIN":
                 model.processChangePassword();
                 break;
-            case "New":
+            case "New Account":
                 model.processNewAccount();
                 break;
             default:

@@ -14,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.geometry.Insets;
 
 /**
  * The View class represents the graphical user interface (GUI) for the ATM application.
@@ -185,16 +186,18 @@ class View {
 
         // Bora Task Week 5 version 3.0.2
         // Add Change Password button
-        Button chpButton = new Button("ChP");
+        Button chpButton = new Button("Change PIN");
         chpButton.setOnAction(this::buttonClicked);
-        chpButton.setPrefSize(50, 40);
+        chpButton.setPrefSize(80, 40);
+        chpButton.setPadding(new Insets(2, 2, 2, 2));  // Reduced padding (top, right, bottom, left)
         extraPad.getChildren().add(chpButton);
         
         // Bora Week 5 version 3.0.3: Added New Account button
         // Add New Account button
-        Button newButton = new Button("New");
+        Button newButton = new Button("New Account");
         newButton.setOnAction(this::buttonClicked);
-        newButton.setPrefSize(50, 40);
+        newButton.setPrefSize(80, 40);
+        newButton.setPadding(new Insets(2, 2, 2, 2));  // Reduced padding
         extraPad.getChildren().add(newButton);
 
         // 10) Position Keypads on the ATM
@@ -208,7 +211,7 @@ class View {
         //Bora Task Week 5 version 3.0.2
         // Position the extra pad (opposite to command pad)
         AnchorPane.setTopAnchor(extraPad, 200.0);
-        AnchorPane.setLeftAnchor(extraPad, 140.0);
+        AnchorPane.setLeftAnchor(extraPad, 110.0);
 
         // Add all UI elements to the UI layer
         uiLayer.getChildren().addAll(message, scrollPane, numPad, commandPad, extraPad);

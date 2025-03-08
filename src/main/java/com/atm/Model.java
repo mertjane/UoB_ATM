@@ -28,6 +28,7 @@ package com.atm;
  * - version 3.0.3: Implemented Create New Account with account type selection
  * - version 3.0.4: Streamlined account creation workflow with AccountCreator service
  * - version 3.0.5: Refactored password validation to separate utility class
+ * - version 3.0.6: Improved button labels and fixed state handling during password change
  * </p>
  */
 public class Model
@@ -179,10 +180,18 @@ public class Model
      */
     public void processClear()
     {
-        // Reset the entered number.
-        number = 0;
-        display1 = "";
-        display();  // Refresh the GUI.
+        if (state.equals(CHANGE_PASSWORD) || state.equals(CONFIRM_PASSWORD)) {
+            // Cancel password change and return to logged in state
+            setState(LOGGED_IN);
+            display1 = "";
+            display2 = "Password change cancelled\n" +
+                    "You can continue with transactions";
+        } else {
+            // Reset the entered number.
+            number = 0;
+            display1 = "";
+            display();  // Refresh the GUI.
+        }
     }
 
     /**
@@ -262,15 +271,19 @@ public class Model
                     {
                         setState(LOGGED_IN);
                         display1 = "";
-                        display2 = "Password changed successfully\n" +
-                                "Now enter the transaction you require";
+                        display2 = "Password Changed Successfully!\n" +
+                                "------------------------\n" +
+                                "Your new password is now active\n" +
+                                "You can continue with transactions";
                     }
                     else
                     {
                         setState(LOGGED_IN);
                         display1 = "";
-                        display2 = "Password change failed\n" +
-                                "Now enter the transaction you require";
+                        display2 = "Password Change Failed\n" +
+                                "------------------------\n" +
+                                "Please try again later or\n" +
+                                "contact support for assistance";
                     }
                 }
                 else
@@ -343,11 +356,14 @@ public class Model
                     // Passwords match, create the account with selected type
                     String newAccountNumber = bank.createNewAccount(selectedAccountType, accPasswd);
                     if (newAccountNumber != null) {
-                        initialise("Account created successfully\n" +
-                                "Your account number is: " + newAccountNumber + "\n" +
-                                "Please login");
+                        initialise("Account Created Successfully!\n" +
+                                "------------------------\n" +
+                                "Your Account Number: " + newAccountNumber + "\n" +
+                                "------------------------\n" +
+                                "Please login with your new credentials");
                     } else {
-                        initialise("Account creation failed\nPlease try again");
+                        initialise("Account Creation Failed\n" +
+                                "Please try again or contact support");
                     }
                 }
                 else
@@ -377,6 +393,8 @@ public class Model
      * </p>
      * <p>
      * Made by Gur Week 4 - version 1.0.1.
+     * Bora Week 5 version 3.0.6: Updated to handle non-logged in states properly
+     * during password change process
      * </p>
      */
     public void processWithdraw()
@@ -387,9 +405,13 @@ public class Model
             display2 = bank.getLastMessage(); // Display the message from the Bank.
             number = 0;
             display1 = "";
-        }
-        else
-        {
+        } else if (state.equals(CHANGE_PASSWORD) || state.equals(CONFIRM_PASSWORD)) {
+            // User is in password change flow, show appropriate message
+            display1 = "";
+            display2 = "Please complete password change\n" +
+                    "or press CLR to cancel";
+            display();
+        } else {
             initialise("You are not logged in");
         }
         display();  // Refresh the GUI.
@@ -404,6 +426,8 @@ public class Model
      * </p>
      * <p>
      * Made by Gur Week 4 - version 1.0.1.
+     * Bora Week 5 version 3.0.6: Updated to handle non-logged in states properly
+     * during password change process
      * </p>
      */
     public void processDeposit()
@@ -414,9 +438,13 @@ public class Model
             display1 = "";
             display2 = bank.getLastMessage();
             number = 0;
-        }
-        else
-        {
+        } else if (state.equals(CHANGE_PASSWORD) || state.equals(CONFIRM_PASSWORD)) {
+            // User is in password change flow, show appropriate message
+            display1 = "";
+            display2 = "Please complete password change\n" +
+                    "or press CLR to cancel";
+            display();
+        } else {
             initialise("You are not logged in");
         }
         display();  // Refresh the GUI.
@@ -430,6 +458,8 @@ public class Model
      * </p>
      * <p>
      * Made by Gur Week 4 - version 1.0.1.
+     * Bora Week 5 version 3.0.6: Updated to handle non-logged in states properly
+     * during password change process
      * </p>
      */
     public void processBalance()
@@ -438,9 +468,13 @@ public class Model
         {
             number = 0;
             display2 = "Your balance is: " + bank.getBalance();
-        }
-        else
-        {
+        } else if (state.equals(CHANGE_PASSWORD) || state.equals(CONFIRM_PASSWORD)) {
+            // User is in password change flow, show appropriate message
+            display1 = "";
+            display2 = "Please complete password change\n" +
+                    "or press CLR to cancel";
+            display();
+        } else {
             initialise("You are not logged in");
         }
         display();  // Refresh the GUI.
