@@ -1,7 +1,7 @@
 package com.atm;
 
 /**
- * The Model class encapsulates the core functionality and state of the ATM application.
+ * The Model class represents the business logic for the ATM system.
  * <p>
  * It manages the data displayed on the ATM interface (title and message boxes), handles user input
  * from the Controller, and interacts with the Bank to perform account operations. When any change occurs,
@@ -27,6 +27,7 @@ package com.atm;
  * - version 3.0.2: Added Change Password functionality with validation
  * - version 3.0.3: Implemented Create New Account with account type selection
  * - version 3.0.4: Streamlined account creation workflow with AccountCreator service
+ * - version 3.0.5: Refactored password validation to separate utility class
  * </p>
  */
 public class Model
@@ -47,12 +48,6 @@ public class Model
     final String NEW_ACCOUNT_PASSWORD = "new_account_password";
     /** Constant for the "confirm_new_password" state. */
     final String CONFIRM_NEW_PASSWORD = "confirm_new_password";
-
-    /**Minimum required length for account passwords*/
-    private static final int MIN_PASSWORD_LENGTH = 4;
-
-    /** Maximum allowed length for account passwords*/
-    private static final int MAX_PASSWORD_LENGTH = 5;
 
     // Model state variables
     /** The current state of the ATM model. */
@@ -83,7 +78,7 @@ public class Model
     public Controller controller;
 
     /** Selected account type for new account creation */
-    private String selectedAccountType = "student";
+    private String selectedAccountType;
 
     /**
      * Constructs a Model instance that interacts with the specified Bank.
@@ -218,7 +213,7 @@ public class Model
                 setState(PASSWORD);
                 display1 = "";
                 display2 = "Now enter your password\n" +
-                        "Followed by \"Ent\"";
+                        "Followed by \"Ent\""; 
                 break;
                 
             case PASSWORD:
@@ -243,10 +238,9 @@ public class Model
                 // Store the new password and ask for confirmation
                 String newPassword = display1.isEmpty() ? "0" : display1;
                 
-                // Validate password length
-                if (newPassword.length() < MIN_PASSWORD_LENGTH || newPassword.length() > MAX_PASSWORD_LENGTH) {
+                if (!PasswordValidator.isValidLength(newPassword)) {
                     display1 = "";
-                    display2 = "Password must be " + MIN_PASSWORD_LENGTH + " to " + MAX_PASSWORD_LENGTH + " digits\n" +
+                    display2 = PasswordValidator.getLengthErrorMessage() + "\n" +
                             "Enter your new password\n" +
                             "Followed by \"Ent\"";
                 } else {
@@ -327,10 +321,9 @@ public class Model
                 // Store the new account password and ask for confirmation
                 String newAccPassword = display1.isEmpty() ? "0" : display1;
                 
-                // Validate password length
-                if (newAccPassword.length() < MIN_PASSWORD_LENGTH || newAccPassword.length() > MAX_PASSWORD_LENGTH) {
+                if (!PasswordValidator.isValidLength(newAccPassword)) {
                     display1 = "";
-                    display2 = "Password must be " + MIN_PASSWORD_LENGTH + " to " + MAX_PASSWORD_LENGTH + " digits\n" +
+                    display2 = PasswordValidator.getLengthErrorMessage() + "\n" +
                             "Enter password for new account\n" +
                             "Followed by \"Ent\"";
                 } else {
