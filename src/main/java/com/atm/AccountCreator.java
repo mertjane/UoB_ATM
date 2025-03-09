@@ -21,9 +21,13 @@ public class AccountCreator {
     /** Random number generator for account numbers */
     private static final Random random = new Random();
     
-    /** Account type constants */
+    /** Student account type with standard features and no monthly fees. */
     public static final String STUDENT_ACCOUNT = "student";
+    
+    /** Gold account type offering premium features with moderate monthly fees. */
     public static final String GOLD_ACCOUNT = "gold";
+    
+    /** Platinum account type providing exclusive features with higher monthly fees. */
     public static final String PLATINUM_ACCOUNT = "platinum";
     
     /**

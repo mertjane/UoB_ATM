@@ -28,6 +28,7 @@ import javafx.geometry.Insets;
  * <br>
  * Bora modified in Week 5 (version 3.0.2):
  * - Added Change Password button to the interface
+ * - Added Create Account button to the interface
  * </p>
  */
 class View {

@@ -14,6 +14,7 @@ import java.util.ArrayList;
  *   to integrate updated account logic.
  * - Bora Task Week 5 version 3.0.1: Modified the login method to use String parameters for account number and password.
  * - Bora Task Week 5 version 3.0.2: Added changePassword method to support password changing functionality.
+ * - Bora Task Week 5 version 3.0.4: Implemented account creation process and integrated with AccountCreator class.
  * </p>
  * <p>
  * Note: The {@code login} method is partially implemented as part of the lab exercise. Tutors can help with guidance.
@@ -70,7 +71,11 @@ public class Bank
     }
 
     /**
-     * Adds a bank account to the bank.
+     * Adds a bank account to the bank's account repository.
+     * <p>
+     * This method checks if an account with the same account number already exists.
+     * If not, it adds the account to the bank's collection and increments the account counter.
+     * </p>
      * <p>
      * Bora Week 5 version 3.0.4: Added to support account creation
      * </p>
@@ -91,7 +96,6 @@ public class Bank
             Debug.trace("Bank::addBankAccount: can't add bank account - too many accounts");
             return false;
         }
-        
     }
 
     /**

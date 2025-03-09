@@ -33,21 +33,21 @@ package com.atm;
  */
 public class Model
 {
-    /** Constant for the "account_no" state. */
+    /** State: Waiting for account number input */
     final String ACCOUNT_NO = "account_no";
-    /** Constant for the "password" state. */
+    /** State: Waiting for password input */
     final String PASSWORD = "password";
-    /** Constant for the "logged_in" state. */
+    /** State: User successfully logged in and can perform various transactions like withdraw, deposit, etc.*/
     final String LOGGED_IN = "logged_in";
-    /** Constant for the "change_password" state. */
+    /** State: User changing password (v3.0.2 - Bora Week 5) */
     final String CHANGE_PASSWORD = "change_password";
-    /** Constant for the "confirm_password" state. */
+    /** State: User confirming new password (v3.0.2 - Bora Week 5) */
     final String CONFIRM_PASSWORD = "confirm_password";
-    /** Constant for the "select_account_type" state. */
+    /** State: User selecting account type(Student, Gold, or Platinum) for new account (v3.0.4 - Bora Week 5) */
     final String SELECT_ACCOUNT_TYPE = "select_account_type";
-    /** Constant for the "new_account_password" state. */
+    /** State: User setting password for new account (v3.0.4 - Bora Week 5) */
     final String NEW_ACCOUNT_PASSWORD = "new_account_password";
-    /** Constant for the "confirm_new_password" state. */
+    /** State: User confirming password for new account (v3.0.4 - Bora Week 5) */
     final String CONFIRM_NEW_PASSWORD = "confirm_new_password";
 
     // Model state variables
