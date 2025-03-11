@@ -1,110 +1,138 @@
 package com.atm;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.geometry.Insets;
 
 /**
- * The View class represents the graphical user interface (GUI) for the ATM application.
- * It handles the layout, user input, and display updates using JavaFX components.
- * <p>
- * This class follows the Model-View-Controller (MVC) design pattern, with references to the
- * Model and Controller objects to communicate user actions and update the display.
- * </p>
- * <p>
- * Version and Task Info: Gur Task Week 4 version 1.0.1
- * <br>
- * Bora modified in Week 5 (version 3.0.2):
- * - Added Change Password button to the interface
- * - Added Create Account button to the interface
- * </p>
+ * The {@code View} class is responsible for constructing and managing the ATM user interface.
+ * It creates and lays out all UI components, handles user interactions, and updates the display
+ * based on data from the {@link Model} and instructions from the {@link Controller}.
+ *
+ * Version and Task Info:
+ * 1. Gur Task Week 4 version 1.0.1
+ * 2. Bora modified in Week 5 (version 3.0.2):
+ *  - Added Change Password button to the interface
+ *  - Added Create Account button to the interface
+ * 3. Gur Modified in week 6 (version 4.0.0):
+ *  - responsive design
+ *  - new background image
+ *  - change view to BasePane
+ *
  */
+
 class View {
-    /** Initial window height */
-    int H = 850;
-    /** Initial window width */
-    int W = 850;
+    /**
+     * The design width used when placing UI components.
+     */
+    private static final double DESIGN_WIDTH = 850;
+
+    /**
+     * The design height used when placing UI components.
+     */
+    private static final double DESIGN_HEIGHT = 850;
 
     // UI components
 
-    /** Label for the ATM title (if needed) */
-    Label title;
-    /** TextField used as the top display screen for messages */
+    /**
+     * The message text field used to display status messages.
+     */
     TextField message;
-    /** TextArea used for the main reply or detailed messages */
+
+    /**
+     * The reply text area used to display detailed information.
+     */
     TextArea reply;
-    /** ScrollPane to contain the reply TextArea */
+
+    /**
+     * A scroll pane that contains the reply text area.
+     */
     ScrollPane scrollPane;
-    /** TilePane for the numeric keypad */
+
+    /**
+     * The numeric keypad for entering numbers.
+     */
     TilePane numPad;
-    /** TilePane for the command keypad (Deposit, Withdraw, etc.) */
+
+    /**
+     * The command keypad for executing ATM operations such as Deposit, Balance, Withdrawal, and Finish.
+     */
     TilePane commandPad;
-    /** ImageView for displaying the background image */
+
+    /**
+     * The image view for displaying the ATM background image.
+     */
     ImageView backgroundImageView;
 
-    // MVC references
+    /**
+     * Extra pad for additional controls like "Change PIN" and "New Account".
+     */
+    TilePane extraPad;
 
-    /** Reference to the Model (application logic) */
+    /**
+     * Reference to the application's data model.
+     */
     public Model model;
-    /** Reference to the Controller (handles user actions) */
+
+    /**
+     * Reference to the application's controller.
+     */
     public Controller controller;
 
     /**
-     * Constructs a new View instance.
-     * Initializes the view and prints a debugging trace message.
+     * Constructs a new {@code View} instance.
      */
     public View() {
         Debug.trace("View::<constructor>");
     }
 
     /**
-     * Sets up and displays the ATM user interface on the provided Stage.
-     * <p>
-     * This method configures the JavaFX components including the background image, screen displays,
-     * numeric keypad, command keypad, and layout anchors. It also binds resize listeners to adjust the UI.
-     * </p>
+     * Initializes and displays the ATM user interface on the given stage.
      *
-     * @param window The primary stage where the UI will be displayed.
+     * <p>This method sets up the main layout, loads images, creates all UI controls (such as the
+     * numeric keypad, command keypad, and extra controls), and configures event handling for user
+     * interactions. It also establishes scaling behavior to maintain the aspect ratio when the window is resized.</p>
+     *
+     * @param window the primary stage on which the UI will be set.
      */
     public void start(Stage window) {
         Debug.trace("View::start");
 
         //Gur Task Week 4 version 1.0.1
-        // 1) Load the background image and center it
-        Image backgroundImage = new Image("atm.jpg");
+        // 1) Create a fixed-size Pane at our original (design) dimensions
+        Pane basePane = new Pane();
+        basePane.setPrefSize(DESIGN_WIDTH, DESIGN_HEIGHT);
+
+        // 2) Add the "ATM console" background image at (0,0), sized to the design dimensions
+        Image backgroundImage = new Image("atm.jpg");  // the "ATM machine" area
         backgroundImageView = new ImageView(backgroundImage);
+        backgroundImageView.setLayoutX(0);
+        backgroundImageView.setLayoutY(0);
+        backgroundImageView.setFitWidth(DESIGN_WIDTH);
+        backgroundImageView.setFitHeight(DESIGN_HEIGHT);
         backgroundImageView.setPreserveRatio(true);
-        backgroundImageView.setFitWidth(W);
-        backgroundImageView.setFitHeight(H);
+        basePane.getChildren().add(backgroundImageView);
 
-        // 2) StackPane ensures the image stays centered
-        StackPane root = new StackPane();
-        root.getChildren().add(backgroundImageView);
-
-        // 3) Create an AnchorPane to hold UI elements
-        AnchorPane uiLayer = new AnchorPane();
-        root.getChildren().add(uiLayer); // Add the UI layer above the background
-
-        // 4) ATM Screen (TextField for messages)
+        // 3) Create and place the message TextField
         message = new TextField();
         message.setEditable(false);
         message.setId("atmScreenTop");
-        message.setPrefWidth(300);
-        message.setPrefHeight(40);
+        message.setPrefSize(300, 40);
+        // Original anchor references: Top=150, Left=280
+        message.setLayoutX(280);
+        message.setLayoutY(150);
+        basePane.getChildren().add(message);
 
-        // 5) Reply area (TextArea inside ScrollPane)
+        // 4) Create and place the scrollable reply area
         reply = new TextArea();
         reply.setEditable(false);
         reply.setId("atmScreenMain");
@@ -112,31 +140,19 @@ class View {
         scrollPane.setPrefSize(400, 250);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setLayoutX(225);
+        scrollPane.setLayoutY(200);
+        basePane.getChildren().add(scrollPane);
 
-        // 6) Adjust screen positions relative to ATM image
-        //Gur Task Week 4 version 1.0.1
-        AnchorPane.setTopAnchor(message, 150.0);
-        AnchorPane.setLeftAnchor(message, 280.0);
-        AnchorPane.setTopAnchor(scrollPane, 200.0);
-        AnchorPane.setLeftAnchor(scrollPane, 225.0);
-
-        // 7) Create separate Keypads
+        // 5) Create the numeric keypad
         //Gur Task Week 4 version 1.0.1
         numPad = new TilePane();
         numPad.setId("numPad");
-        numPad.setPrefColumns(3); // 3-column numeric keypad
+        numPad.setPrefColumns(3);
         numPad.setHgap(5);
         numPad.setVgap(5);
 
-        commandPad = new TilePane();
-        commandPad.setId("commandPad");
-        commandPad.setPrefColumns(1); // Adjust column count if needed
-        commandPad.setHgap(5);
-        commandPad.setVgap(20);
-
-        // 8) Populate Number Pad (0-9)
-        //Gur Task Week 4 version 1.0.1
-        String numberLabels[][] = {
+        String[][] numberLabels = {
                 {"7", "8", "9"},
                 {"4", "5", "6"},
                 {"1", "2", "3"},
@@ -145,129 +161,137 @@ class View {
 
         for (String[] row : numberLabels) {
             for (String label : row) {
-                if (label.length() >= 1) {
+                if (!label.isEmpty()) {
                     Button b = new Button(label);
                     b.setOnAction(this::buttonClicked);
-                    b.setPrefSize(60, 60); // Increase button size
+                    b.setPrefSize(60, 60);
                     numPad.getChildren().add(b);
                 } else {
                     numPad.getChildren().add(new Text()); // Spacer
                 }
             }
         }
+        // Approx. position it at bottom left (based on the original anchor references)
+        numPad.setLayoutX(190);
+        numPad.setLayoutY(500);
+        basePane.getChildren().add(numPad);
 
-        // 9) Populate Command Pad (Deposit, Withdraw, Balance, Finish)
-        String commandLabels[][] = {
-                {"Dep"},
-                {"Bal"},
-                {"W/D"},
-                {"Fin"}
-        };
+        // 6) Create the command keypad (Deposit, Bal, W/D, Finish)
+        //Gur Task Week 4 version 1.0.1
+        commandPad = new TilePane();
+        commandPad.setId("commandPad");
+        commandPad.setPrefColumns(1);
+        commandPad.setHgap(5);
+        commandPad.setVgap(20);
 
+        String[][] commandLabels = { {"Dep"}, {"Bal"}, {"W/D"}, {"Fin"} };
         for (String[] row : commandLabels) {
             for (String label : row) {
-                if (label.length() >= 1) {
+                if (!label.isEmpty()) {
                     Button b = new Button(label);
                     b.setOnAction(this::buttonClicked);
-                    b.setPrefSize(50, 40); // Increase button size
+                    b.setPrefSize(50, 40);
                     commandPad.getChildren().add(b);
                 } else {
                     commandPad.getChildren().add(new Text()); // Spacer
                 }
             }
         }
+        commandPad.setLayoutX(660);
+        commandPad.setLayoutY(200);
+        basePane.getChildren().add(commandPad);
 
+        // 7) Extra pad for "Change PIN" and "New Account"
         // Bora Task Week 5 version 3.0.2
-        // Create a new TilePane for additional buttons (Change Password and New Account)
-        TilePane extraPad = new TilePane();
+        extraPad = new TilePane();
         extraPad.setId("extraPad");
-        extraPad.setPrefColumns(1); // Single column layout
+        extraPad.setPrefColumns(1);
         extraPad.setHgap(5);
         extraPad.setVgap(20);
 
-        // Bora Task Week 5 version 3.0.2
-        // Add Change Password button
         Button chpButton = new Button("Change PIN");
         chpButton.setOnAction(this::buttonClicked);
         chpButton.setPrefSize(80, 40);
-        chpButton.setPadding(new Insets(2, 2, 2, 2));  // Reduced padding (top, right, bottom, left)
+        chpButton.setPadding(new Insets(2));
         extraPad.getChildren().add(chpButton);
-        
-        // Bora Week 5 version 3.0.3: Added New Account button
-        // Add New Account button
-        Button newButton = new Button("New Account");
-        newButton.setOnAction(this::buttonClicked);
-        newButton.setPrefSize(80, 40);
-        newButton.setPadding(new Insets(2, 2, 2, 2));  // Reduced padding
-        extraPad.getChildren().add(newButton);
 
-        // 10) Position Keypads on the ATM
-        //Gur Task Week 4 version 1.0.1
-        AnchorPane.setBottomAnchor(numPad, 95.0);  // Move numeric pad to bottom left
-        AnchorPane.setLeftAnchor(numPad, 190.0);
+        Button newAccButton = new Button("New Account");
+        newAccButton.setOnAction(this::buttonClicked);
+        newAccButton.setPrefSize(80, 40);
+        newAccButton.setPadding(new Insets(2));
+        extraPad.getChildren().add(newAccButton);
 
-        AnchorPane.setTopAnchor(commandPad, 200.0); // Move command buttons to top middle
-        AnchorPane.setLeftAnchor(commandPad, 660.0);
+        extraPad.setLayoutX(110);
+        extraPad.setLayoutY(200);
+        basePane.getChildren().add(extraPad);
 
-        //Bora Task Week 5 version 3.0.2
-        // Position the extra pad (opposite to command pad)
-        AnchorPane.setTopAnchor(extraPad, 200.0);
-        AnchorPane.setLeftAnchor(extraPad, 110.0);
+        //Gur Task Week 6 version 4.0.0 (section 8->12)
+        // 8) Wrap basePane inside a Group so we can scale the entire ATM layout
+        Group atmGroup = new Group(basePane);
 
-        // Add all UI elements to the UI layer
-        uiLayer.getChildren().addAll(message, scrollPane, numPad, commandPad, extraPad);
+        // 9) Build a StackPane root. Add a second "full-window" background behind the atmGroup
+        StackPane root = new StackPane();
 
-        // 11) Scene and Window
-        Scene scene = new Scene(root, W, H);
+        // This background fills the entire window (use your own "background.jpg" or any other)
+        ImageView fullWindowBackground = new ImageView(new Image("background.jpg"));
+        fullWindowBackground.setPreserveRatio(false);
+        // Bind to fill all available space in the window
+        fullWindowBackground.fitWidthProperty().bind(root.widthProperty());
+        fullWindowBackground.fitHeightProperty().bind(root.heightProperty());
+
+        // Add the big background first, then the scaled ATM Group
+        root.getChildren().addAll(fullWindowBackground, atmGroup);
+
+        // 10) Create the Scene
+        Scene scene = new Scene(root, DESIGN_WIDTH, DESIGN_HEIGHT);
         scene.getStylesheets().add("atm.css");
 
-        // 12) Bind image size to window size (for proper scaling)
-        backgroundImageView.fitWidthProperty().bind(root.widthProperty());
-        backgroundImageView.fitHeightProperty().bind(root.heightProperty());
+        // 11) Scale the atmGroup whenever the window is resized (uniform scale)
+        root.widthProperty().addListener((obs, oldV, newV) ->
+                scaleAll(atmGroup, scene.getWidth(), scene.getHeight())
+        );
+        root.heightProperty().addListener((obs, oldV, newV) ->
+                scaleAll(atmGroup, scene.getWidth(), scene.getHeight())
+        );
 
-        root.widthProperty().addListener((obs, oldVal, newVal) -> adjustElements(root.getWidth(), root.getHeight()));
-        root.heightProperty().addListener((obs, oldVal, newVal) -> adjustElements(root.getWidth(), root.getHeight()));
-
+        // 12) Show the Stage
         window.setScene(scene);
         window.setTitle("Bank ATM");
-        window.setResizable(false); // Ensures window cannot be resized by the user
+        window.setResizable(true);
         window.show();
+
+        // Scale once at startup
+        scaleAll(atmGroup, scene.getWidth(), scene.getHeight());
     }
 
     /**
-     * Adjusts the layout positions of UI components dynamically when the window is resized.
-     * <p>
-     * This method recalculates the anchors for various UI elements based on the new window dimensions.
-     * </p>
+     * Scales the entire layout to maintain a fixed aspect ratio.
      *
-     * @param newWidth  The new width of the window.
-     * @param newHeight The new height of the window.
+     * <p>This method calculates the scale factor based on the current window dimensions relative to the design dimensions,
+     * and uniformly scales the given group so that the UI appears proportionally the same regardless of window size.</p>
+     *
+     * @param group         the {@code Group} containing the ATM layout to scale.
+     * @param currentWidth  the current width of the scene.
+     * @param currentHeight the current height of the scene.
      */
-    private void adjustElements(double newWidth, double newHeight) {
-        double widthRatio = newWidth / W;
-        double heightRatio = newHeight / H;
-
-        AnchorPane.setTopAnchor(message, 210.0 * heightRatio);
-        AnchorPane.setLeftAnchor(message, 315.0 * widthRatio);
-        AnchorPane.setTopAnchor(scrollPane, 265.0 * heightRatio);
-        AnchorPane.setLeftAnchor(scrollPane, 315.0 * widthRatio);
-        AnchorPane.setBottomAnchor(numPad, 100.0 * heightRatio);
-        AnchorPane.setLeftAnchor(numPad, 200.0 * widthRatio);
-        AnchorPane.setTopAnchor(commandPad, 120.0 * heightRatio);
-        AnchorPane.setLeftAnchor(commandPad, 380.0 * widthRatio);
+    private void scaleAll(Group group, double currentWidth, double currentHeight) {
+        double scaleX = currentWidth / DESIGN_WIDTH;
+        double scaleY = currentHeight / DESIGN_HEIGHT;
+        double scale = Math.min(scaleX, scaleY);
+        group.setScaleX(scale);
+        group.setScaleY(scale);
     }
 
     /**
-     * Event handler for button click events in the ATM interface.
-     * <p>
-     * This method retrieves the button that was clicked, extracts its label, logs the event, and then
-     * passes the label to the controller for further processing.
-     * </p>
+     * Handles button click events from all ATM interface buttons.
      *
-     * @param event The ActionEvent triggered by a button click.
+     * <p>This method is registered as the event handler for all button clicks in the UI. It retrieves the button's label
+     * and passes it to the {@code Controller} for further processing.</p>
+     *
+     * @param event the {@code ActionEvent} triggered by the button click.
      */
     public void buttonClicked(ActionEvent event) {
-        Button b = ((Button) event.getSource());
+        Button b = (Button) event.getSource();
         if (controller != null) {
             String label = b.getText();
             Debug.trace("View::buttonClicked: label = " + label);
@@ -276,11 +300,10 @@ class View {
     }
 
     /**
-     * Updates the view's display elements based on the current state of the Model.
-     * <p>
-     * This method retrieves the latest display text from the Model and sets the text
-     * of the message TextField and reply TextArea accordingly.
-     * </p>
+     * Updates the ATM display by refreshing the message and reply fields.
+     *
+     * <p>This method is typically called after the model is updated, ensuring that the UI reflects the current state
+     * of the application. It sets the text of the message field and reply area based on the data in the {@code Model}.</p>
      */
     public void update() {
         if (model != null) {
