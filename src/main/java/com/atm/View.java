@@ -3,8 +3,12 @@ package com.atm;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -12,6 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 
 /**
  * The {@code View} class is responsible for constructing and managing the ATM user interface.
@@ -89,6 +94,11 @@ class View {
     public Controller controller;
 
     /**
+     * The log out button to log out of the ATM session.
+     */
+    Button logOutButton;
+
+    /**
      * Constructs a new {@code View} instance.
      */
     public View() {
@@ -107,7 +117,6 @@ class View {
     public void start(Stage window) {
         Debug.trace("View::start");
 
-        //Gur Task Week 4 version 1.0.1
         // 1) Create a fixed-size Pane at our original (design) dimensions
         Pane basePane = new Pane();
         basePane.setPrefSize(DESIGN_WIDTH, DESIGN_HEIGHT);
@@ -127,7 +136,6 @@ class View {
         message.setEditable(false);
         message.setId("atmScreenTop");
         message.setPrefSize(300, 40);
-        // Original anchor references: Top=150, Left=280
         message.setLayoutX(280);
         message.setLayoutY(150);
         basePane.getChildren().add(message);
@@ -145,7 +153,6 @@ class View {
         basePane.getChildren().add(scrollPane);
 
         // 5) Create the numeric keypad
-        //Gur Task Week 4 version 1.0.1
         numPad = new TilePane();
         numPad.setId("numPad");
         numPad.setPrefColumns(3);
@@ -171,13 +178,11 @@ class View {
                 }
             }
         }
-        // Approx. position it at bottom left (based on the original anchor references)
         numPad.setLayoutX(190);
         numPad.setLayoutY(500);
         basePane.getChildren().add(numPad);
 
         // 6) Create the command keypad (Deposit, Bal, W/D, Finish)
-        //Gur Task Week 4 version 1.0.1
         commandPad = new TilePane();
         commandPad.setId("commandPad");
         commandPad.setPrefColumns(1);
@@ -201,8 +206,7 @@ class View {
         commandPad.setLayoutY(200);
         basePane.getChildren().add(commandPad);
 
-        // 7) Extra pad for "Change PIN" and "New Account"
-        // Bora Task Week 5 version 3.0.2
+        // 7) Extra pad for "Change PIN", "New Account" and "Log Out"
         extraPad = new TilePane();
         extraPad.setId("extraPad");
         extraPad.setPrefColumns(1);
@@ -221,25 +225,26 @@ class View {
         newAccButton.setPadding(new Insets(2));
         extraPad.getChildren().add(newAccButton);
 
+        // Create the "Log Out" button
+        logOutButton = new Button("Log Out");
+        logOutButton.setOnAction(this::logOutButtonClicked);  // Set action handler
+        logOutButton.setPrefSize(80, 40);
+        logOutButton.setPadding(new Insets(2));
+        extraPad.getChildren().add(logOutButton);
+
         extraPad.setLayoutX(110);
         extraPad.setLayoutY(200);
         basePane.getChildren().add(extraPad);
 
-        //Gur Task Week 6 version 4.0.0 (section 8->12)
         // 8) Wrap basePane inside a Group so we can scale the entire ATM layout
         Group atmGroup = new Group(basePane);
 
         // 9) Build a StackPane root. Add a second "full-window" background behind the atmGroup
         StackPane root = new StackPane();
-
-        // This background fills the entire window (use your own "background.jpg" or any other)
         ImageView fullWindowBackground = new ImageView(new Image("background.jpg"));
         fullWindowBackground.setPreserveRatio(false);
-        // Bind to fill all available space in the window
         fullWindowBackground.fitWidthProperty().bind(root.widthProperty());
         fullWindowBackground.fitHeightProperty().bind(root.heightProperty());
-
-        // Add the big background first, then the scaled ATM Group
         root.getChildren().addAll(fullWindowBackground, atmGroup);
 
         // 10) Create the Scene
@@ -266,13 +271,6 @@ class View {
 
     /**
      * Scales the entire layout to maintain a fixed aspect ratio.
-     *
-     * <p>This method calculates the scale factor based on the current window dimensions relative to the design dimensions,
-     * and uniformly scales the given group so that the UI appears proportionally the same regardless of window size.</p>
-     *
-     * @param group         the {@code Group} containing the ATM layout to scale.
-     * @param currentWidth  the current width of the scene.
-     * @param currentHeight the current height of the scene.
      */
     private void scaleAll(Group group, double currentWidth, double currentHeight) {
         double scaleX = currentWidth / DESIGN_WIDTH;
@@ -284,11 +282,6 @@ class View {
 
     /**
      * Handles button click events from all ATM interface buttons.
-     *
-     * <p>This method is registered as the event handler for all button clicks in the UI. It retrieves the button's label
-     * and passes it to the {@code Controller} for further processing.</p>
-     *
-     * @param event the {@code ActionEvent} triggered by the button click.
      */
     public void buttonClicked(ActionEvent event) {
         Button b = (Button) event.getSource();
@@ -300,6 +293,20 @@ class View {
     }
 
     /**
+     * Nadeen EL Samad week 6: create a logout button for users with a goodbye message. 
+     * Handles the "Log Out" button click event.
+     * This method will be called when the Log Out button is clicked.
+     */
+    public void logOutButtonClicked(ActionEvent event) {
+        Debug.trace("View::logOutButtonClicked");
+    
+        // Create an instance of GoodbyePage and pass the current window (Stage)
+        GoodbyePage goodbyePage = new GoodbyePage();
+        goodbyePage.start((Stage) ((Node) event.getSource()).getScene().getWindow());
+    }
+    
+    /**
+     * Nadeen EL Samad week 6. 
      * Updates the ATM display by refreshing the message and reply fields.
      *
      * <p>This method is typically called after the model is updated, ensuring that the UI reflects the current state
@@ -313,3 +320,4 @@ class View {
         }
     }
 }
+    

@@ -7,61 +7,150 @@
   - The resizing and alteration of the picture was implemented by Gur, version 1.0.1.
 */
 #Layout {
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: center;
-    -fx-background-size: contain; /* Ensure full image is always visible */
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center;
+  -fx-background-size: contain; /* Ensure full image is always visible */
 }
 
 /* ATM Screen Styling (TextField & TextArea) */
 /*
-  Styles for the ATM screen components.
-  - The top screen (#atmScreenTop) uses a blue gradient background with white text.
-  - It has rounded borders and a slight opacity for a polished look.
-  - The main screen (#atmScreenMain) is set to have a transparent background with black text.
-  - This modification was implemented by Gur, version 1.0.1.
+Styles for the ATM screen components.
+- The top screen (#atmScreenTop) uses a blue gradient background with white text.
+- It has rounded borders and a slight opacity for a polished look.
+- The main screen (#atmScreenMain) is set to have a transparent background with black text.
+- This modification was implemented by Gur, version 1.0.1.
 */
 #atmScreenTop {
-    -fx-background-color: linear-gradient(to bottom, #003366, #0055AA);
-    -fx-text-fill: #FFFFFF;
-    -fx-border-color: #222;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
-    -fx-opacity: 0.85;
-    -fx-font-weight: bold;
+  -fx-background-color: linear-gradient(to bottom, #003366, #0055AA);
+  -fx-text-fill: #FFFFFF;
+  -fx-border-color: #222;
+  -fx-border-radius: 4;
+  -fx-background-radius: 4;
+  -fx-opacity: 0.85;
+  -fx-font-weight: bold;
 }
 
 #atmScreenMain {
-    -fx-background-color: transparent;  /* Makes background transparent */
-    -fx-text-fill: black;                /* Sets text color to black */
+  -fx-background-color: transparent;  /* Makes background transparent */
+  -fx-text-fill: black;                /* Sets text color to black */
 }
 
 /* Keypad Styling */
 /*
-  Styles for the buttons within the keypad pane.
-  - Uses a 14pt Arial font for button labels.
-  - Buttons have a subtle linear gradient background and a light border.
-  - Rounded corners and padding provide a consistent, user-friendly appearance.
+Styles for the buttons within the keypad pane.
+- Uses a 14pt Arial font for button labels.
+- Buttons have a subtle linear gradient background and a light border.
+- Rounded corners and padding provide a consistent, user-friendly appearance.
 */
 #keypadPane .button {
-    -fx-font: 14pt "Arial";
-    -fx-background-color: linear-gradient(#CCCCCC, #AAAAAA);
-    -fx-border-color: #666;
-    -fx-border-radius: 4;
-    -fx-padding: 8 12;
+  -fx-font: 14pt "Arial";
+  -fx-background-color: linear-gradient(#CCCCCC, #AAAAAA);
+  -fx-border-color: #666;
+  -fx-border-radius: 4;
+  -fx-padding: 8 12;
 }
 
 /* Button Hover Effect */
 /*
-  Changes the background gradient of buttons when hovered to provide visual feedback.
+Changes the background gradient of buttons when hovered to provide visual feedback.
 */
 #keypadPane .button:hover {
-    -fx-background-color: linear-gradient(#EEEEEE, #BBBBBB);
+  -fx-background-color: linear-gradient(#EEEEEE, #BBBBBB);
 }
 
 /* Button Press Effect */
 /*
-  Alters the background gradient of buttons when pressed to simulate a click effect.
+Alters the background gradient of buttons when pressed to simulate a click effect.
 */
 #keypadPane .button:pressed {
-    -fx-background-color: linear-gradient(#AAAAAA, #888888);
+  -fx-background-color: linear-gradient(#AAAAAA, #888888);
+}
+
+/* Welcome Page Styling */
+/*
+Styles for the Welcome Page.
+- Centers the layout with a subtle shadow.
+- The welcome message uses a bold, large font.
+- The "Get Started" button has rounded corners with a smooth hover effect.
+- These modifications were implemented by Gur, version 1.0.2.
+- Additional UI improvements were made to enhance the appearance, ensuring better readability and a more modern look.
+*/
+#welcomeLayout {
+  -fx-alignment: center;
+  -fx-spacing: 15;
+  -fx-padding: 30;
+  -fx-background-color: linear-gradient(to bottom, #ffffff, #e6e6e6); /* Soft gradient */
+  -fx-border-color: #BBBBBB;
+  -fx-border-radius: 12;
+  -fx-background-radius: 12;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 12, 0, 0, 6);
+}
+
+#welcomeLabel {
+  -fx-font-size: 20pt;
+  -fx-font-weight: bold;
+  -fx-text-fill: #222222;
+}
+
+#welcomeButton {
+  -fx-font-size: 14pt;
+  -fx-padding: 12 25;
+  -fx-background-color: linear-gradient(#0088CC, #0055AA);
+  -fx-text-fill: white;
+  -fx-border-radius: 8;
+  -fx-background-radius: 8;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 3);
+}
+
+#welcomeButton:hover {
+  -fx-background-color: linear-gradient(#00A0FF, #0077CC);
+}
+
+#welcomeButton:pressed {
+  -fx-background-color: linear-gradient(#0055AA, #003377);
+}
+
+/* Goodbye Page Styling */
+/*
+Styles for the Goodbye Page.
+- Provides a centered layout with smooth spacing.
+- The goodbye message is displayed in a large, readable font.
+- The "Close" button is styled similarly to the Welcome Page button but uses a red theme.
+- Additional refinements ensure that the layout remains visually appealing.
+*/
+#goodbyeLayout {
+  -fx-alignment: center;
+  -fx-spacing: 20;
+  -fx-padding: 40;
+  -fx-background-color: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
+  -fx-border-color: #AAAAAA;
+  -fx-border-radius: 12;
+  -fx-background-radius: 12;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 12, 0, 0, 6);
+}
+
+#goodbyeLabel {
+  -fx-font-size: 20pt;
+  -fx-font-weight: bold;
+  -fx-text-fill: #333333;
+}
+
+#goodbyeButton {
+  -fx-font-size: 14pt;
+  -fx-padding: 12 25;
+  -fx-background-color: linear-gradient(#CC0000, #AA0000);
+  -fx-text-fill: white;
+  -fx-border-radius: 8;
+  -fx-background-radius: 8;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 3);
+}
+
+#goodbyeButton:hover {
+  -fx-background-color: linear-gradient(#FF3333, #CC0000);
+}
+
+#goodbyeButton:pressed {
+  -fx-background-color: linear-gradient(#AA0000, #880000);
 }

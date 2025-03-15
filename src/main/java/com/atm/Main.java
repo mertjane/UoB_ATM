@@ -17,8 +17,20 @@ import javafx.stage.Stage;
  * functionality/features as needed. Tutors may provide guidance but cannot assist directly with coding.
  * </p>
  */
-public class Main extends Application
-{
+public class Main extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        // First, launch the WelcomePage
+        WelcomePage welcomePage = new WelcomePage();
+        welcomePage.setOnWelcomeClosed(() -> {
+            // This runs when the WelcomePage is closed
+            launchMainATM(primaryStage);
+        });
+
+        // Start Welcome Page
+        welcomePage.start(new Stage());
+    }
 
     /**
      * Initializes and starts the ATM application GUI.
@@ -29,9 +41,8 @@ public class Main extends Application
      *
      * @param window The primary stage where the application GUI will be displayed.
      */
-    public void start(Stage window)
-    {
-        // set up debugging and print initial debugging message
+    private void launchMainATM(Stage window) {
+        // Set up debugging and print initial debugging message
         Debug.set(true);
         Debug.trace("atm starting");
         Debug.trace("Main::start");
@@ -39,39 +50,41 @@ public class Main extends Application
         // Create a Bank object for this ATM
         Bank b = new Bank();
 
-        // add some test bank accounts
-        // Gur Task Week 4 version 1.0.1 - Bora (version 3.0.1) changed the account numbers to String to preserve leading zeros
+        // Add some test bank accounts
         b.addBankAccount(new StudentAccount("00000", "00000", 0));
         b.addBankAccount(new GoldAccount("11111", "11111", 0));
         b.addBankAccount(new PlatinumAccount("22222", "22222", 0));
-        // Bora added more test accounts to test leading zeros version 3.0.1
         b.addBankAccount(new StudentAccount("00001", "00001", 100));
         b.addBankAccount(new GoldAccount("00002", "00002", 200));
         b.addBankAccount(new PlatinumAccount("00003", "00003", 300));
-       
-        // Create the Model, View and Controller objects
-        Model model = new Model(b);   // the model needs the Bank object to 'talk to' the bank
+
+        // Create the Model, View, and Controller objects
+        Model model = new Model(b);   // The model needs the Bank object to 'talk to' the bank
         View view = new View();
         Controller controller = new Controller();
 
         // Link them together so they can talk to each other
-        // Each one has instance variables for the other two
         model.view = view;
         model.controller = controller;
-
         controller.model = model;
         controller.view = view;
-
         view.model = model;
         view.controller = controller;
 
-        // Start up the GUI (view), and then tell the model to initialize and display itself
+        // Display the main ATM interface
         view.start(window);
         model.initialise("Welcome to the ATM");
         model.display();
 
         // Application is now running
-        Debug.trace("atm running");
+        Debug.trace("ATM running");
+
+        // Ensure the Goodbye Page is shown when the user closes the application
+        window.setOnCloseRequest(event -> {
+            event.consume(); // Prevent immediate closing
+            GoodbyePage goodbyePage = new GoodbyePage();
+            goodbyePage.start(window);
+        });
     }
 
     /**
@@ -82,8 +95,7 @@ public class Main extends Application
      *
      * @param args Command-line arguments (not used).
      */
-    public static void main(String args[])
-    {
-        launch(args);
+    public static void main(String args[]) {
+        launch(args);  // Launch WelcomePage first, then ATM
     }
 }

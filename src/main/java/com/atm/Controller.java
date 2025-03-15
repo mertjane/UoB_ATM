@@ -70,8 +70,34 @@ public class Controller
             default:
                 model.processUnknownKey(action);
                 break;
+            case "Logout":
+                model.processLogout();
+                break;
+            
+        }
+
+    }
+
+        /**
+     * Asks the user for exit confirmation before closing the session.
+     */
+    private void confirmExit()
+    {
+        boolean confirm = view.showConfirmationDialog("Are you sure you want to exit?");
+        if (confirm) {
+            model.processFinish();
         }
     }
 
+    /**
+     * Handles unknown actions to prevent errors and improve debugging.
+     * @param action The unrecognized action input.
+     */
+    private void handleUnknownAction(String action)
+    {
+        Debug.trace("Controller::process: Unknown action - " + action);
+        view.showErrorMessage("Invalid action: " + action);
+    }
 }
+
 

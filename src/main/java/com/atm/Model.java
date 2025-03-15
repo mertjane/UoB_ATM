@@ -580,4 +580,13 @@ public class Model
                 "Enter choice followed by \"Ent\"";
         display();
     }
+
+    public void processLogout() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'processLogout'");
+    }
+
+    void processLogout() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
