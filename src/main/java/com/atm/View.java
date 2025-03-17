@@ -319,5 +319,26 @@ class View {
             reply.setText(model.display2);
         }
     }
+
+    /**
+     * Displays an error message to the user.
+     * @param message The error message to display
+     */
+    public void showErrorMessage(String message) {
+        this.message.setText(message);
+        this.reply.setText("Error: " + message);
+        update();
+    }
+
+    /**
+     * Shows a confirmation dialog to the user.
+     * @param message The confirmation message to display
+     * @return true if user confirms, false otherwise
+     */
+    public boolean showConfirmationDialog(String message) {
+        // TODO: Implement actual dialog
+        // For now, always return true
+        return true;
+    }
 }
     
