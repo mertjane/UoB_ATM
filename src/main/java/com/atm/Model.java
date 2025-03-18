@@ -580,4 +580,9 @@ public class Model
                 "Enter choice followed by \"Ent\"";
         display();
     }
+
+
+    void processLogout() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
