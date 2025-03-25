@@ -18,11 +18,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class DatabaseConnection {
+    // Load dotenv
+    private static final Dotenv dotenv = Dotenv.load();
+
     // Database credentials
-    private static final String URL = "jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:6543/postgres";
-    private static final String USER = "postgres.jthptiiefeqgcldptyyf";
-    private static final String PASSWORD = "uobatm123**";
+    private static final String URL = dotenv.get("DB_URL");
+    private static final String USER = dotenv.get("DB_USER");
+    private static final String PASSWORD = dotenv.get("DB_PASSWORD");
 
     public static Connection getConnection() {
         Connection connection = null;
