@@ -24,7 +24,7 @@ public class DatabaseConnection {
     // Load dotenv
     private static final Dotenv dotenv = Dotenv.load();
 
-    // Database credentials
+    // Database credentials getting from .env
     private static final String URL = dotenv.get("DB_URL");
     private static final String USER = dotenv.get("DB_USER");
     private static final String PASSWORD = dotenv.get("DB_PASSWORD");
@@ -32,7 +32,7 @@ public class DatabaseConnection {
     public static Connection getConnection() {
         Connection connection = null;
         try {
-            // Load the PostgreSQL JDBC driver (not always necessary in newer Java versions)
+            // Load the PostgreSQL JDBC driver (may not be necessary to new java versions)
             Class.forName("org.postgresql.Driver");
 
             // Establish the connection

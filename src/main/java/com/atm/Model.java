@@ -428,6 +428,9 @@ public class Model {
      * Made by Gur Week 4 - version 1.0.1.
      * Bora Week 5 version 3.0.6: Updated to handle non-logged in states properly
      * during password change process
+     * 
+     * @Mertcan week 7 - version 3.0.7
+     * Modified with switch-case added !hasCheckedBalance boolean to prompt to user before withdrawing.
      * </p>
      */
     public void processWithdraw() {
@@ -500,6 +503,8 @@ public class Model {
      * Made by Gur Week 4 - version 1.0.1.
      * Bora Week 5 version 3.0.6: Updated to handle non-logged in states properly
      * during password change process
+     * @Mertcan week 7 - version 3.0.7:
+     * Added hassCheckedBalance boolean inside the function and state to true after checking balance. 
      * </p>
      */
     public void processBalance() {
