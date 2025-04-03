@@ -14,24 +14,27 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.media.AudioClip;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
+import javafx.stage.Stage; // Import for sound
 
 /**
- * The {@code View} class is responsible for constructing and managing the ATM user interface.
- * It creates and lays out all UI components, handles user interactions, and updates the display
- * based on data from the {@link Model} and instructions from the {@link Controller}.
+ * The {@code View} class is responsible for constructing and managing the ATM
+ * user interface.
+ * It creates and lays out all UI components, handles user interactions, and
+ * updates the display
+ * based on data from the {@link Model} and instructions from the
+ * {@link Controller}.
  *
  * Version and Task Info:
  * 1. Gur Task Week 4 version 1.0.1
  * 2. Bora modified in Week 5 (version 3.0.2):
- *  - Added Change Password button to the interface
- *  - Added Create Account button to the interface
+ * - Added Change Password button to the interface
+ * - Added Create Account button to the interface
  * 3. Gur Modified in week 6 (version 4.0.0):
- *  - responsive design
- *  - new background image
- *  - change view to BasePane
+ * - responsive design
+ * - new background image
+ * - change view to BasePane
  *
  */
 
@@ -69,7 +72,8 @@ class View {
     TilePane numPad;
 
     /**
-     * The command keypad for executing ATM operations such as Deposit, Balance, Withdrawal, and Finish.
+     * The command keypad for executing ATM operations such as Deposit, Balance,
+     * Withdrawal, and Finish.
      */
     TilePane commandPad;
 
@@ -98,19 +102,31 @@ class View {
      */
     Button logOutButton;
 
+    // Add AudioClip for button click sound
+    private final AudioClip buttonClickSound;
+
     /**
      * Constructs a new {@code View} instance.
      */
+
     public View() {
         Debug.trace("View::<constructor>");
+        
+        // Initialize the sound in the constructor
+        buttonClickSound = new AudioClip(getClass().getResource("/beep-22.wav").toString());
     }
 
     /**
      * Initializes and displays the ATM user interface on the given stage.
      *
-     * <p>This method sets up the main layout, loads images, creates all UI controls (such as the
-     * numeric keypad, command keypad, and extra controls), and configures event handling for user
-     * interactions. It also establishes scaling behavior to maintain the aspect ratio when the window is resized.</p>
+     * <p>
+     * This method sets up the main layout, loads images, creates all UI controls
+     * (such as the
+     * numeric keypad, command keypad, and extra controls), and configures event
+     * handling for user
+     * interactions. It also establishes scaling behavior to maintain the aspect
+     * ratio when the window is resized.
+     * </p>
      *
      * @param window the primary stage on which the UI will be set.
      */
@@ -121,8 +137,9 @@ class View {
         Pane basePane = new Pane();
         basePane.setPrefSize(DESIGN_WIDTH, DESIGN_HEIGHT);
 
-        // 2) Add the "ATM console" background image at (0,0), sized to the design dimensions
-        Image backgroundImage = new Image("atm.jpg");  // the "ATM machine" area
+        // 2) Add the "ATM console" background image at (0,0), sized to the design
+        // dimensions
+        Image backgroundImage = new Image("atm.jpg"); // the "ATM machine" area
         backgroundImageView = new ImageView(backgroundImage);
         backgroundImageView.setLayoutX(0);
         backgroundImageView.setLayoutY(0);
@@ -160,10 +177,10 @@ class View {
         numPad.setVgap(5);
 
         String[][] numberLabels = {
-                {"7", "8", "9"},
-                {"4", "5", "6"},
-                {"1", "2", "3"},
-                {"CLR", "0", "Ent"}
+                { "7", "8", "9" },
+                { "4", "5", "6" },
+                { "1", "2", "3" },
+                { "CLR", "0", "Ent" }
         };
 
         for (String[] row : numberLabels) {
@@ -189,7 +206,7 @@ class View {
         commandPad.setHgap(5);
         commandPad.setVgap(20);
 
-        String[][] commandLabels = { {"Dep"}, {"Bal"}, {"W/D"}, {"Fin"} };
+        String[][] commandLabels = { { "Dep" }, { "Bal" }, { "W/D" }, { "Fin" } };
         for (String[] row : commandLabels) {
             for (String label : row) {
                 if (!label.isEmpty()) {
@@ -227,7 +244,7 @@ class View {
 
         // Create the "Log Out" button
         logOutButton = new Button("Log Out");
-        logOutButton.setOnAction(this::logOutButtonClicked);  // Set action handler
+        logOutButton.setOnAction(this::logOutButtonClicked); // Set action handler
         logOutButton.setPrefSize(80, 40);
         logOutButton.setPadding(new Insets(2));
         extraPad.getChildren().add(logOutButton);
@@ -239,7 +256,8 @@ class View {
         // 8) Wrap basePane inside a Group so we can scale the entire ATM layout
         Group atmGroup = new Group(basePane);
 
-        // 9) Build a StackPane root. Add a second "full-window" background behind the atmGroup
+        // 9) Build a StackPane root. Add a second "full-window" background behind the
+        // atmGroup
         StackPane root = new StackPane();
         ImageView fullWindowBackground = new ImageView(new Image("background.jpg"));
         fullWindowBackground.setPreserveRatio(false);
@@ -252,12 +270,8 @@ class View {
         scene.getStylesheets().add("atm.css");
 
         // 11) Scale the atmGroup whenever the window is resized (uniform scale)
-        root.widthProperty().addListener((obs, oldV, newV) ->
-                scaleAll(atmGroup, scene.getWidth(), scene.getHeight())
-        );
-        root.heightProperty().addListener((obs, oldV, newV) ->
-                scaleAll(atmGroup, scene.getWidth(), scene.getHeight())
-        );
+        root.widthProperty().addListener((obs, oldV, newV) -> scaleAll(atmGroup, scene.getWidth(), scene.getHeight()));
+        root.heightProperty().addListener((obs, oldV, newV) -> scaleAll(atmGroup, scene.getWidth(), scene.getHeight()));
 
         // 12) Show the Stage
         window.setScene(scene);
@@ -285,6 +299,10 @@ class View {
      */
     public void buttonClicked(ActionEvent event) {
         Button b = (Button) event.getSource();
+
+        // Play the sound when any button is clicked
+        buttonClickSound.play();
+
         if (controller != null) {
             String label = b.getText();
             Debug.trace("View::buttonClicked: label = " + label);
@@ -293,24 +311,32 @@ class View {
     }
 
     /**
-     * Nadeen EL Samad week 6: create a logout button for users with a goodbye message. 
+     * Nadeen EL Samad week 6: create a logout button for users with a goodbye
+     * message.
      * Handles the "Log Out" button click event.
      * This method will be called when the Log Out button is clicked.
      */
     public void logOutButtonClicked(ActionEvent event) {
         Debug.trace("View::logOutButtonClicked");
-    
+
+        // Play sound for Log Out button as well
+        buttonClickSound.play();
+
         // Create an instance of GoodbyePage and pass the current window (Stage)
         GoodbyePage goodbyePage = new GoodbyePage();
         goodbyePage.start((Stage) ((Node) event.getSource()).getScene().getWindow());
     }
-    
+
     /**
-     * Nadeen EL Samad week 6. 
+     * Nadeen EL Samad week 6.
      * Updates the ATM display by refreshing the message and reply fields.
      *
-     * <p>This method is typically called after the model is updated, ensuring that the UI reflects the current state
-     * of the application. It sets the text of the message field and reply area based on the data in the {@code Model}.</p>
+     * <p>
+     * This method is typically called after the model is updated, ensuring that the
+     * UI reflects the current state
+     * of the application. It sets the text of the message field and reply area
+     * based on the data in the {@code Model}.
+     * </p>
      */
     public void update() {
         if (model != null) {
@@ -322,6 +348,7 @@ class View {
 
     /**
      * Displays an error message to the user.
+     * 
      * @param message The error message to display
      */
     public void showErrorMessage(String message) {
@@ -332,6 +359,7 @@ class View {
 
     /**
      * Shows a confirmation dialog to the user.
+     * 
      * @param message The confirmation message to display
      * @return true if user confirms, false otherwise
      */
@@ -341,4 +369,3 @@ class View {
         return true;
     }
 }
-    

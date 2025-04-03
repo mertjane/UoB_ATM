@@ -2,12 +2,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com</groupId>
     <artifactId>ATM</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>ATM</name>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
@@ -15,7 +13,6 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
-
     <dependencies>
         <!-- JavaFX -->
         <dependency>
@@ -38,7 +35,6 @@
             <artifactId>javafx-media</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-
         <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -52,7 +48,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
         <!-- TestFX for UI testing -->
         <dependency>
             <groupId>org.testfx</groupId>
@@ -66,8 +61,19 @@
             <version>4.0.17</version>
             <scope>test</scope>
         </dependency>
+        <!-- JDBC Database -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+        </dependency>
+        <!-- .ENV -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>5.2.2</version>
+        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <!-- Compiler Plugin -->
@@ -80,7 +86,6 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
-
             <!-- JavaFX Plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>

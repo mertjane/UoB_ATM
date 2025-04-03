@@ -19,16 +19,20 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
+    private Stage primaryStage; // Store the primary stage to reuse it
+
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+
         // First, launch the WelcomePage
         WelcomePage welcomePage = new WelcomePage();
         welcomePage.setOnWelcomeClosed(() -> {
             // This runs when the WelcomePage is closed
-            launchMainATM(primaryStage);
+            launchMainATM();
         });
 
-        // Start Welcome Page
+        // Start Welcome Page (pass the primaryStage to it)
         welcomePage.start(new Stage());
     }
 
@@ -38,10 +42,8 @@ public class Main extends Application {
      * This method sets up debugging, creates a {@code Bank} object, adds test bank accounts,
      * initializes the MVC components (Model, View, Controller), links them together, and displays the GUI.
      * </p>
-     *
-     * @param window The primary stage where the application GUI will be displayed.
      */
-    private void launchMainATM(Stage window) {
+    private void launchMainATM() {
         // Set up debugging and print initial debugging message
         Debug.set(true);
         Debug.trace("atm starting");
@@ -71,8 +73,8 @@ public class Main extends Application {
         view.model = model;
         view.controller = controller;
 
-        // Display the main ATM interface
-        view.start(window);
+        // Display the main ATM interface on the primary stage
+        view.start(primaryStage); // Pass the same primaryStage to the View
         model.initialise("Welcome to the ATM");
         model.display();
 
@@ -80,10 +82,9 @@ public class Main extends Application {
         Debug.trace("ATM running");
 
         // Ensure the Goodbye Page is shown when the user closes the application
-        window.setOnCloseRequest(event -> {
-            event.consume(); // Prevent immediate closing
+        primaryStage.setOnCloseRequest(event -> {
             GoodbyePage goodbyePage = new GoodbyePage();
-            goodbyePage.start(window);
+            goodbyePage.start(primaryStage); // Reuse the primaryStage for GoodbyePage
         });
     }
 
@@ -92,10 +93,9 @@ public class Main extends Application {
      * <p>
      * When running in an IDE like BlueJ, the {@code start} method may be invoked directly.
      * </p>
-     *
-     * @param args Command-line arguments (not used).
      */
     public static void main(String args[]) {
         launch(args);  // Launch WelcomePage first, then ATM
     }
 }
+
