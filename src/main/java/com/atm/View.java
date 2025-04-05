@@ -14,7 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
-import javafx.scene.media.AudioClip;
 import javafx.scene.text.Text;
 import javafx.stage.Stage; // Import for sound
 
@@ -35,7 +34,9 @@ import javafx.stage.Stage; // Import for sound
  * - responsive design
  * - new background image
  * - change view to BasePane
- *
+ * 4. Gur week 7:
+ * - Implementing sound effects when pressing buttons.
+ * - Welcome prompt.
  */
 
 class View {
@@ -102,18 +103,12 @@ class View {
      */
     Button logOutButton;
 
-    // Add AudioClip for button click sound
-    private final AudioClip buttonClickSound;
-
     /**
      * Constructs a new {@code View} instance.
      */
 
     public View() {
         Debug.trace("View::<constructor>");
-        
-        // Initialize the sound in the constructor
-        buttonClickSound = new AudioClip(getClass().getResource("/beep-22.wav").toString());
     }
 
     /**
@@ -132,6 +127,7 @@ class View {
      */
     public void start(Stage window) {
         Debug.trace("View::start");
+
 
         // 1) Create a fixed-size Pane at our original (design) dimensions
         Pane basePane = new Pane();
@@ -299,9 +295,9 @@ class View {
      */
     public void buttonClicked(ActionEvent event) {
         Button b = (Button) event.getSource();
-
+        Sound.beep(); //make a beep sound when button is clicked - Gur version 05.04.2025
         // Play the sound when any button is clicked
-        buttonClickSound.play();
+        //buttonClickSound.play();
 
         if (controller != null) {
             String label = b.getText();
@@ -317,10 +313,8 @@ class View {
      * This method will be called when the Log Out button is clicked.
      */
     public void logOutButtonClicked(ActionEvent event) {
+        Sound.beep(); //make a beep sound when button is clicked - Gur version 05.04.2025
         Debug.trace("View::logOutButtonClicked");
-
-        // Play sound for Log Out button as well
-        buttonClickSound.play();
 
         // Create an instance of GoodbyePage and pass the current window (Stage)
         GoodbyePage goodbyePage = new GoodbyePage();

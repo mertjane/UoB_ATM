@@ -12,6 +12,9 @@ import javafx.stage.Stage;
 public class GoodbyePage {
 
     public void start(Stage window) {
+        // Play sound for Log Out button as well
+        Sound.playThankYouPrompt(); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
         // Creating a goodbye message
         Label goodbyeLabel = new Label("Thank you for using the ATM. Goodbye!");
         goodbyeLabel.setId("goodbyeLabel"); // Apply CSS styling
@@ -20,6 +23,7 @@ public class GoodbyePage {
         Button closeButton = new Button("Close");
         closeButton.setId("goodbyeButton"); // Apply CSS styling
         closeButton.setOnAction(e -> {
+            Sound.playThankYouPrompt(); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             // Close the application when the button is clicked
             window.close();
         });

@@ -1,6 +1,7 @@
 package com.atm;
 /**
- * Nadeen week 6: add a welcome page with UI changes. 
+ * Nadeen week 6: add a welcome page with UI changes.
+ * Gur week 7: Implementing sound effects when pressing buttons and welcome prompt.
  */
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -19,6 +20,7 @@ public class WelcomePage extends Application {
         Label welcomeLabel = new Label("Welcome to the ATM System!");
         welcomeLabel.setId("welcomeLabel"); // Apply CSS styling
 
+
         // Create Get Started Button
         Button getStartedButton = new Button("Get Started");
         getStartedButton.setId("welcomeButton"); // Apply CSS styling
@@ -26,6 +28,10 @@ public class WelcomePage extends Application {
         // Action to handle button click event
         getStartedButton.setOnAction(e -> {
             System.out.println("Get Started button clicked!");
+
+            //play the welcome prompt when the ATM UI is opened - Gur version 05.04.2025
+            Sound.playWelcomePrompt();
+
             // Close the welcome window
             primaryStage.close();
 
