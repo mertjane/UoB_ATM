@@ -67,6 +67,9 @@ public class Controller
             case "New Account":
                 model.processNewAccount();
                 break;
+            case "Send Money":
+                model.processSendMoney();
+                break;
             default:
                 model.processUnknownKey(action);
                 break;

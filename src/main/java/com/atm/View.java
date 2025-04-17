@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -54,7 +55,6 @@ class View {
     private static final double DESIGN_HEIGHT = 850;
 
     // UI components
-
     TextField message;
     TextArea reply;
     ScrollPane scrollPane;
@@ -63,10 +63,6 @@ class View {
     ImageView backgroundImageView;
     TilePane extraPad;
     Button logOutButton;
-
-    /* public View() {
-        Debug.trace("View::<constructor>");
-    } */
 
     public View(Bank bank) {
         if (bank == null) {
@@ -96,7 +92,6 @@ class View {
         // 1) Create a fixed-size Pane at our original (design) dimensions
         Pane basePane = new Pane();
         basePane.setPrefSize(DESIGN_WIDTH, DESIGN_HEIGHT);
-
         // 2) Add the "ATM console" background image at (0,0), sized to the design
         // dimensions
         Image backgroundImage = new Image("atm.jpg"); // the "ATM machine" area
@@ -202,12 +197,23 @@ class View {
         newAccButton.setPadding(new Insets(2));
         extraPad.getChildren().add(newAccButton);
 
+
         // Transactions/Receipts Button
-        Button transButton = new Button("Transactions");
-        transButton.setOnAction(this::transButtonClicked);
-        transButton.setPrefSize(80, 40);
-        transButton.setPadding(new Insets(2));
-        extraPad.getChildren().add(transButton);
+        // @Author: Mertcan Week 8
+        Button receiptButton = new Button("Transactions");
+        receiptButton.setOnAction(this::receiptButtonClicked);
+        receiptButton.setPrefSize(80, 40);
+        receiptButton.setPadding(new Insets(2));
+        extraPad.getChildren().add(receiptButton);
+
+        // Transfer Funds Button
+        // @Author: Mertcan Week 8
+        Button transferButton = new Button("Send Money");
+        transferButton.setOnAction(this::buttonClicked);
+        transferButton.setPrefSize(80, 40);
+        transferButton.setPadding(new Insets(2));
+        extraPad.getChildren().add(transferButton);
+        
 
         // Create the "Log Out" button
         logOutButton = new Button("Log Out");
@@ -217,7 +223,7 @@ class View {
         extraPad.getChildren().add(logOutButton);
 
         extraPad.setLayoutX(110);
-        extraPad.setLayoutY(200);
+        extraPad.setLayoutY(150);
         basePane.getChildren().add(extraPad);
 
         // 8) Wrap basePane inside a Group so we can scale the entire ATM layout
@@ -279,13 +285,14 @@ class View {
 
     /**
      * Handling the transaction button click
+     * 
      * @Mertcan week8 v3.2.0
      * @param event
      */
 
-    public void transButtonClicked(ActionEvent event) {
+    public void receiptButtonClicked(ActionEvent event) {
         Sound.beep();
-        Debug.trace("View::transButtonClicked");
+        Debug.trace("View::receiptButtonClicked");
 
         // Get the current logged-in account (BankAccount)
         BankAccount account = bank.getCurrentAccount();
@@ -391,5 +398,16 @@ class View {
         // TODO: Implement actual dialog
         // For now, always return true
         return true;
+    }
+
+    /**
+     * Displays low balance warning
+     * @Author Mertcan week 8
+     */
+    public void showLowBalanceWarning(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Low Balance Warning");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -23,6 +23,8 @@ package com.atm;
  * account.</li>
  * <li>{@code NEW_ACCOUNT_PASSWORD}: Setting password for new account.</li>
  * <li>{@code CONFIRM_NEW_PASSWORD}: Confirming password for new account.</li>
+ * <li>{@code TRANSFER_ACCOUNT}: User entering recipient's account number for transfer.</li>
+ * <li>{@code TRANSFER_AMOUNT}: User entering amount to transfer.</li>
  * </ul>
  * </p>
  * 
@@ -63,6 +65,10 @@ public class Model {
     final String NEW_ACCOUNT_PASSWORD = "new_account_password";
     /** State: User confirming password for new account (v3.0.4 - Bora Week 5) */
     final String CONFIRM_NEW_PASSWORD = "confirm_new_password";
+    /** State: User entering recipient's account number for transfer */
+    final String TRANSFER_ACCOUNT = "transfer_account";
+    /** State: User entering amount to transfer */
+    final String TRANSFER_AMOUNT = "transfer_amount";
 
     // Model state variables
     /** The current state of the ATM model. */
@@ -244,6 +250,8 @@ public class Model {
      * If the login is successful, the state changes to {@code LOGGED_IN} and a
      * success message is displayed.
      * If not, the model is re-initialized with an error message.</li>
+     * <li>In the {@code TRANSFER_ACCOUNT} state, it stores the recipient's account number and asks for the amount.</li>
+     * <li>In the {@code TRANSFER_AMOUNT} state, it processes the transfer amount.</li>
      * <li>In the {@code LOGGED_IN} state, no action is taken.</li>
      * </ul>
      * </p>
@@ -276,6 +284,48 @@ public class Model {
                             "Now enter the transaction you require";
                 } else {
                     initialise("Unknown account/password");
+                }
+                break;
+
+            case TRANSFER_ACCOUNT:
+                // Store recipient's account number and ask for amount
+                String recipientAccount = display1.isEmpty() ? "0" : display1;
+                if (bank.isValidAccount(recipientAccount)) {
+                    accNumber = recipientAccount; // Temporarily store recipient account
+                    setState(TRANSFER_AMOUNT);
+                    display1 = "";
+                    display2 = "Enter amount to transfer\n" +
+                            "Followed by \"Ent\"";
+                } else {
+                    display1 = "";
+                    display2 = "Invalid recipient account\n" +
+                            "Please try again";
+                }
+                break;
+            /**
+             * @Author Mertcan Week 8
+             * Added transfer amount state and process
+             */
+            case TRANSFER_AMOUNT:
+                // Process the transfer amount
+                double transferAmount = number;
+                if (transferAmount > 0) {
+                    boolean success = bank.transfer(accNumber, transferAmount);
+                    if (success) {
+                        display1 = "";
+                        display2 = "Transfer successful!\n" +
+                                "Amount: £" + transferAmount + "\n" +
+                                "To account: " + accNumber;
+                        setState(LOGGED_IN);
+                    } else {
+                        display1 = "";
+                        display2 = "Transfer failed: " + "\n" + bank.getLastMessage();
+                        setState(LOGGED_IN);
+                    }
+                } else {
+                    display1 = "";
+                    display2 = "Invalid amount\n" +
+                            "Please enter a positive amount";
                 }
                 break;
 
@@ -626,6 +676,25 @@ public class Model {
                 "2 - Gold\n" +
                 "3 - Platinum\n" +
                 "Enter choice followed by \"Ent\"";
+        display();
+    }
+
+    /**
+     * Processes a money transfer request.
+     * <p>
+     * If the user is logged in, this method initiates the money transfer process.
+     * It prompts the user to enter the recipient's account number and the amount to transfer.
+     * </p>
+     */
+    public void processSendMoney() {
+        if (state.equals(LOGGED_IN)) {
+            display1 = "";
+            display2 = "Enter recipient's account number\n" +
+                    "Followed by \"Ent\"";
+            setState(TRANSFER_ACCOUNT);
+        } else {
+            initialise("You are not logged in");
+        }
         display();
     }
 

@@ -1,10 +1,15 @@
 package com.atm;
 
-import javax.sound.sampled.*;
+import java.io.File;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+
 import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import java.io.File;
 
 /**
  * The {@code Sound} class provides various sound playback methods
@@ -27,10 +32,10 @@ public class Sound {
         new Thread(() -> {
             try {
                 float sampleRate = 44100;   // Samples per second
-                int durationMs = 150;       // Duration in milliseconds
+                int durationMs = 30;        // Very short duration for a click sound
                 int numSamples = (int) (sampleRate * durationMs / 1000);
-                double frequency = 1000;    // Frequency in Hz
-                byte volume = 100;          // Volume (0-127)
+                double frequency = 800;     // Lower frequency for a more comfortable click
+                byte volume = 20;           // Lower volume for a softer click
 
                 // Define the audio format: 8-bit, mono, signed.
                 AudioFormat format = new AudioFormat(sampleRate, 8, 1, true, false);
