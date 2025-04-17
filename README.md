@@ -109,5 +109,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- University of Bristol
+- University of Brighton
 - All contributors to the project 
