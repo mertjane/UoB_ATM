@@ -610,6 +610,14 @@ public class Model {
      * </p>
      */
     public void processNewAccount() {
+        // Show consent screen first
+        if (!ConsentScreen.showAndWaitForConsent()) {
+            // User did not consent, return to initial state
+            initialise("Account creation cancelled: Terms not accepted");
+            return;
+        }
+        
+        // User consented, proceed with account type selection
         setState(SELECT_ACCOUNT_TYPE);
         number = 0;
         display1 = "";

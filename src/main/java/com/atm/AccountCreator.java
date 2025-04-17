@@ -48,12 +48,13 @@ public class AccountCreator {
     }
     
     /**
-     * Creates a new bank account of the specified type.
-     * 
-     * @param bank The bank to add the account to
-     * @param accountType The type of account to create (student, gold, platinum)
-     * @param password The password for the new account
-     * @return The account number of the newly created account, or null if creation failed
+     * Creates a new account in the bank with the specified account type and password.
+     *
+     * @param bank        the Bank in which to create the account
+     * @param accountType the type of account to create (STUDENT_ACCOUNT, GOLD_ACCOUNT, or
+     *                    PLATINUM_ACCOUNT)
+     * @param password    the password for the new account
+     * @return the account number of the newly created account, or null if creation failed
      */
     public static String createAccount(Bank bank, String accountType, String password) {
         // Generate a unique account number
