@@ -3,28 +3,35 @@ package com.atm;
 import java.util.ArrayList;
 
 /**
- * The Bank class is a simple implementation of a bank that manages a collection of bank accounts.
+ * The Bank class is a simple implementation of a bank that manages a collection
+ * of bank accounts.
  * <p>
- * It maintains an internal list of {@link BankAccount} objects and tracks the currently logged-in account.
+ * It maintains an internal list of {@link BankAccount} objects and tracks the
+ * currently logged-in account.
  * </p>
  * <p>
  * <strong>Version and Modification History:</strong><br>
- * - Mertcan Task 2 Update 2.0.0: Initial implementation for bank account management.<br>
- * - Gur Task Week 4 version 2.0.1: Modified the deposit, withdraw, getBalance, and getLastMessage methods
- *   to integrate updated account logic.
- * - Bora Task Week 5 version 3.0.1: Modified the login method to use String parameters for account number and password.
- * - Bora Task Week 5 version 3.0.2: Added changePassword method to support password changing functionality.
- * - Bora Task Week 5 version 3.0.4: Implemented account creation process and integrated with AccountCreator class.
+ * - Mertcan Task 2 Update 2.0.0: Initial implementation for bank account
+ * management.<br>
+ * - Gur Task Week 4 version 2.0.1: Modified the deposit, withdraw, getBalance,
+ * and getLastMessage methods
+ * to integrate updated account logic.
+ * - Bora Task Week 5 version 3.0.1: Modified the login method to use String
+ * parameters for account number and password.
+ * - Bora Task Week 5 version 3.0.2: Added changePassword method to support
+ * password changing functionality.
+ * - Bora Task Week 5 version 3.0.4: Implemented account creation process and
+ * integrated with AccountCreator class.
  * </p>
  * <p>
- * Note: The {@code login} method is partially implemented as part of the lab exercise. Tutors can help with guidance.
+ * Note: The {@code login} method is partially implemented as part of the lab
+ * exercise. Tutors can help with guidance.
  * </p>
  */
-public class Bank
-{
+public class Bank {
     // Instance variables containing the bank information
-    int maxAccounts = 10;       // maximum number of accounts the bank can hold
-    int numAccounts = 0;        // the number of accounts currently in the bank
+    int maxAccounts = 10; // maximum number of accounts the bank can hold
+    int numAccounts = 0; // the number of accounts currently in the bank
 
     // Week 2 implementation
     // Implemented by Mertcan, version 1.0.0
@@ -44,13 +51,25 @@ public class Bank
         accounts = new ArrayList<>();
     }
 
-    /*
-    // a method to create new BankAccounts - this is known as a 'factory method' and is a more
-    // flexible way to do it than just using the 'new' keyword directly.
-    public BankAccount makeBankAccount(int accNumber, int accPasswd, int balance) {
-        return new BankAccount(accNumber, accPasswd, balance);
+    /**
+     * Retrieves the currently logged-in bank account.
+     * 
+     * @return The currently logged-in BankAccount object, or null if no account is
+     *         logged in.
+     */
+    public BankAccount getCurrentAccount() {
+        return currentAccount;
     }
-    */
+
+    /*
+     * // a method to create new BankAccounts - this is known as a 'factory method'
+     * and is a more
+     * // flexible way to do it than just using the 'new' keyword directly.
+     * public BankAccount makeBankAccount(int accNumber, int accPasswd, int balance)
+     * {
+     * return new BankAccount(accNumber, accPasswd, balance);
+     * }
+     */
 
     /**
      * Checks if an account with the given account number exists.
@@ -74,7 +93,8 @@ public class Bank
      * Adds a bank account to the bank's account repository.
      * <p>
      * This method checks if an account with the same account number already exists.
-     * If not, it adds the account to the bank's collection and increments the account counter.
+     * If not, it adds the account to the bank's collection and increments the
+     * account counter.
      * </p>
      * <p>
      * Bora Week 5 version 3.0.4: Added to support account creation
@@ -99,17 +119,21 @@ public class Bank
     }
 
     /**
-     * Attempts to log in to a bank account using the provided account number and password.
+     * Attempts to log in to a bank account using the provided account number and
+     * password.
      * <p>
-     * The method searches the list of accounts for a match. If a matching account is found,
-     * it is set as the current account and {@code true} is returned. Otherwise, the method
+     * The method searches the list of accounts for a match. If a matching account
+     * is found,
+     * it is set as the current account and {@code true} is returned. Otherwise, the
+     * method
      * resets the current account and returns {@code false}.
      * </p>
      * <p>
      * Week 2 implementation by Mertcan, version 1.0.0.
      * </p>
      * <p>
-     * Week 5 - Bora - Version 3.0.1: Modified parameter types from int to String to support leading zeros.
+     * Week 5 - Bora - Version 3.0.1: Modified parameter types from int to String to
+     * support leading zeros.
      * </p>
      *
      * @param accNumber the account number to log in.
@@ -125,7 +149,7 @@ public class Bank
             /**
              * Check if the account number and password match the provided ones.
              * <p>
-             * Week 5 - Bora - Version 3.0.1: Changed from int comparison to String.equals() 
+             * Week 5 - Bora - Version 3.0.1: Changed from int comparison to String.equals()
              * to support leading zeros.
              * </p>
              */
@@ -146,12 +170,11 @@ public class Bank
     }
 
     /**
-     * Logs out the currently logged-in account by resetting the current account to {@code null}.
+     * Logs out the currently logged-in account by resetting the current account to
+     * {@code null}.
      */
-    public void logout()
-    {
-        if (loggedIn())
-        {
+    public void logout() {
+        if (loggedIn()) {
             Debug.trace("Bank::logout: logging out, accNumber = " + currentAccount.accNumber);
             currentAccount = null;
         }
@@ -169,15 +192,15 @@ public class Bank
     /**
      * Deposits money into the currently logged-in account.
      * <p>
-     * This method calls the {@code deposit} method on the {@code BankAccount} object.
+     * This method calls the {@code deposit} method on the {@code BankAccount}
+     * object.
      * Gur Task Week 4 version 2.0.1.
      * </p>
      *
      * @param amount the amount to deposit.
      * @return {@code true} if the deposit was successful; {@code false} otherwise.
      */
-    public boolean deposit(int amount)
-    {
+    public boolean deposit(int amount) {
         if (loggedIn()) {
             return currentAccount.deposit(amount);
         } else {
@@ -188,15 +211,16 @@ public class Bank
     /**
      * Withdraws money from the currently logged-in account.
      * <p>
-     * This method calls the {@code withdraw} method on the {@code BankAccount} object.
+     * This method calls the {@code withdraw} method on the {@code BankAccount}
+     * object.
      * Gur Task Week 4 version 2.0.1.
      * </p>
      *
      * @param amount the amount to withdraw.
-     * @return {@code true} if the withdrawal was successful; {@code false} otherwise.
+     * @return {@code true} if the withdrawal was successful; {@code false}
+     *         otherwise.
      */
-    public boolean withdraw(int amount)
-    {
+    public boolean withdraw(int amount) {
         if (loggedIn()) {
             return currentAccount.withdraw(amount);
         } else {
@@ -207,14 +231,14 @@ public class Bank
     /**
      * Retrieves the balance of the currently logged-in account.
      * <p>
-     * This method calls the {@code getBalance} method on the {@code BankAccount} object.
+     * This method calls the {@code getBalance} method on the {@code BankAccount}
+     * object.
      * Gur Task Week 4 version 2.0.1.
      * </p>
      *
      * @return the account balance, or -1 if no account is logged in.
      */
-    public double getBalance()
-    {
+    public double getBalance() {
         if (loggedIn()) {
             return currentAccount.getBalance();
         } else {
@@ -230,8 +254,7 @@ public class Bank
      *
      * @return the last message generated by the account.
      */
-    public String getLastMessage()
-    {
+    public String getLastMessage() {
         return currentAccount.getLastMessage();
     }
 
@@ -245,14 +268,13 @@ public class Bank
      * Week 5 - Made by Bora - Version 3.0.2: Added change password functionality
      * </p>
      *
-     * @param accNumber The account number to verify
+     * @param accNumber   The account number to verify
      * @param newPassword The new password to set
-     * @return {@code true} if the password was changed successfully; {@code false} otherwise
+     * @return {@code true} if the password was changed successfully; {@code false}
+     *         otherwise
      */
-    public boolean changePassword(String accNumber, String newPassword)
-    {
-        if (loggedIn() && currentAccount.getAccNumber().equals(accNumber))
-        {
+    public boolean changePassword(String accNumber, String newPassword) {
+        if (loggedIn() && currentAccount.getAccNumber().equals(accNumber)) {
             currentAccount.setAccPasswd(newPassword);
             Debug.trace("Bank::changePassword: Password changed for account " + accNumber);
             return true;
@@ -272,8 +294,9 @@ public class Bank
      * </p>
      *
      * @param accountType The type of account to create (student, gold, platinum)
-     * @param password The password for the new account
-     * @return The account number of the newly created account, or null if creation failed
+     * @param password    The password for the new account
+     * @return The account number of the newly created account, or null if creation
+     *         failed
      */
     public String createNewAccount(String accountType, String password) {
         return AccountCreator.createAccount(this, accountType, password);

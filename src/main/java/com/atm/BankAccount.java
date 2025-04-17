@@ -1,5 +1,7 @@
 package com.atm;
 
+import com.atm.utils.TransactionWriter;
+
 /**
  * Abstract representation of a bank account.
  * <p>
@@ -78,6 +80,7 @@ public abstract class BankAccount {
         }
         balance -= (amount + getCommission());
         lastMessage = "Withdrawn £" + amount + ". New balance: £" + balance;
+        TransactionWriter.logTransaction(accNumber, "Withdraw", amount, balance); // <- NEW LINE Week 8 @Mertcan 
         Debug.trace(this.getClass().getSimpleName() + "::withdraw: " + lastMessage);
         return true;
     }
@@ -107,6 +110,7 @@ public abstract class BankAccount {
         }
         balance += netDeposit;
         lastMessage = "Deposited £" + amount + " (Commission: £" + getCommission() + "). New balance: £" + balance;
+        TransactionWriter.logTransaction(accNumber, "Deposit", amount, balance); // <- NEW LINE Week 8 @Mertcan
         Debug.trace(this.getClass().getSimpleName() + "::deposit: " + lastMessage);
         return true;
     }

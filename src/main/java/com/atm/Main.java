@@ -62,7 +62,7 @@ public class Main extends Application {
 
         // Create the Model, View, and Controller objects
         Model model = new Model(b);   // The model needs the Bank object to 'talk to' the bank
-        View view = new View();
+        View view = new View(b);
         Controller controller = new Controller();
 
         // Link them together so they can talk to each other

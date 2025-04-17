@@ -1,5 +1,9 @@
 package com.atm;
 
+import java.util.List;
+
+import com.atm.utils.TransactionReader;
+
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -40,74 +44,35 @@ import javafx.stage.Stage; // Import for sound
  */
 
 class View {
-    /**
-     * The design width used when placing UI components.
-     */
-    private static final double DESIGN_WIDTH = 850;
 
-    /**
-     * The design height used when placing UI components.
-     */
+    private Bank bank;
+    public Model model;
+    public Controller controller;
+
+    // The design width used when placing UI components.
+    private static final double DESIGN_WIDTH = 850;
     private static final double DESIGN_HEIGHT = 850;
 
     // UI components
 
-    /**
-     * The message text field used to display status messages.
-     */
     TextField message;
-
-    /**
-     * The reply text area used to display detailed information.
-     */
     TextArea reply;
-
-    /**
-     * A scroll pane that contains the reply text area.
-     */
     ScrollPane scrollPane;
-
-    /**
-     * The numeric keypad for entering numbers.
-     */
     TilePane numPad;
-
-    /**
-     * The command keypad for executing ATM operations such as Deposit, Balance,
-     * Withdrawal, and Finish.
-     */
     TilePane commandPad;
-
-    /**
-     * The image view for displaying the ATM background image.
-     */
     ImageView backgroundImageView;
-
-    /**
-     * Extra pad for additional controls like "Change PIN" and "New Account".
-     */
     TilePane extraPad;
-
-    /**
-     * Reference to the application's data model.
-     */
-    public Model model;
-
-    /**
-     * Reference to the application's controller.
-     */
-    public Controller controller;
-
-    /**
-     * The log out button to log out of the ATM session.
-     */
     Button logOutButton;
 
-    /**
-     * Constructs a new {@code View} instance.
-     */
+    /* public View() {
+        Debug.trace("View::<constructor>");
+    } */
 
-    public View() {
+    public View(Bank bank) {
+        if (bank == null) {
+            throw new IllegalArgumentException("Bank cannot be null");
+        }
+        this.bank = bank;
         Debug.trace("View::<constructor>");
     }
 
@@ -127,7 +92,6 @@ class View {
      */
     public void start(Stage window) {
         Debug.trace("View::start");
-
 
         // 1) Create a fixed-size Pane at our original (design) dimensions
         Pane basePane = new Pane();
@@ -238,6 +202,13 @@ class View {
         newAccButton.setPadding(new Insets(2));
         extraPad.getChildren().add(newAccButton);
 
+        // Transactions/Receipts Button
+        Button transButton = new Button("Transactions");
+        transButton.setOnAction(this::transButtonClicked);
+        transButton.setPrefSize(80, 40);
+        transButton.setPadding(new Insets(2));
+        extraPad.getChildren().add(transButton);
+
         // Create the "Log Out" button
         logOutButton = new Button("Log Out");
         logOutButton.setOnAction(this::logOutButtonClicked); // Set action handler
@@ -295,14 +266,73 @@ class View {
      */
     public void buttonClicked(ActionEvent event) {
         Button b = (Button) event.getSource();
-        Sound.beep(); //make a beep sound when button is clicked - Gur version 05.04.2025
+        Sound.beep(); // make a beep sound when button is clicked - Gur version 05.04.2025
         // Play the sound when any button is clicked
-        //buttonClickSound.play();
+        // buttonClickSound.play();
 
         if (controller != null) {
             String label = b.getText();
             Debug.trace("View::buttonClicked: label = " + label);
             controller.process(label);
+        }
+    }
+
+    /**
+     * Handling the transaction button click
+     * @Mertcan week8 v3.2.0
+     * @param event
+     */
+
+    public void transButtonClicked(ActionEvent event) {
+        Sound.beep();
+        Debug.trace("View::transButtonClicked");
+
+        // Get the current logged-in account (BankAccount)
+        BankAccount account = bank.getCurrentAccount();
+
+        // Ensure account is not null before proceeding
+        if (account != null) {
+            // Get the last transaction for this account
+            List<String> transactions = TransactionReader.getTransactions(account.getAccNumber(), 1);
+
+            if (!transactions.isEmpty()) {
+                String[] fields = transactions.get(0).split(",");
+                if (fields.length >= 5) {
+                    String timestamp = fields[0];
+                    String accNumber = fields[1];
+                    String type = fields[2];
+                    double amount = Double.parseDouble(fields[3]);
+                    double balance = Double.parseDouble(fields[4]);
+
+                    String receipt = String.format("""
+                            ====== Transaction Receipt ======
+                            Date: %s
+                            Account: ****%s
+                            --------------------------------
+                            %s:     £%.2f
+                            Balance:        £%.2f
+                            Thank you for using our ATM.
+                            =================================
+                            """,
+                            timestamp,
+                            accNumber.substring(accNumber.length() - 4),
+                            type,
+                            amount,
+                            balance);
+
+                    reply.setText(receipt);
+                    message.setText("Transaction Summary");
+                } else {
+                    reply.setText("Transaction format invalid.");
+                    message.setText("Error");
+                }
+            } else {
+                reply.setText("No recent transactions found.");
+                message.setText("No Transactions");
+            }
+        } else {
+            reply.setText("No account is logged in.");
+            message.setText("Error");
         }
     }
 
@@ -313,7 +343,7 @@ class View {
      * This method will be called when the Log Out button is clicked.
      */
     public void logOutButtonClicked(ActionEvent event) {
-        Sound.beep(); //make a beep sound when button is clicked - Gur version 05.04.2025
+        Sound.beep(); // make a beep sound when button is clicked - Gur version 05.04.2025
         Debug.trace("View::logOutButtonClicked");
 
         // Create an instance of GoodbyePage and pass the current window (Stage)
