@@ -80,6 +80,9 @@ public abstract class BankAccount {
      * </ul>
      * A commission fee is applied to each withdrawal.
      * </p>
+     * <p>
+     * Modified by Bora in Week 9 - Added balance rounding to fix floating-point precision issues.
+     * </p>
      *
      * @param amount the amount to withdraw.
      * @return {@code true} if the withdrawal was successful, {@code false}
@@ -97,6 +100,10 @@ public abstract class BankAccount {
             return false;
         }
         balance -= (amount + getCommission());
+        
+        // Round balance to 2 decimal places to avoid floating-point precision issues (Bora - Week 9)
+        balance = Math.round(balance * 100.0) / 100.0;
+        
         lastMessage = "Withdrawn £" + amount + ". New balance: £" + balance;
         TransactionWriter.logTransaction(accNumber, "Withdraw", amount, balance); // <- NEW LINE Week 8 @Mertcan
         checkLowBalance(); // <- NEW LINE Week 8 @Mertcan
@@ -112,6 +119,9 @@ public abstract class BankAccount {
      * A commission fee is deducted from the deposit. If the net deposit after
      * commission is non-positive,
      * the deposit is rejected.
+     * </p>
+     * <p>
+     * Modified by Bora in Week 9 - Added balance rounding to fix floating-point precision issues.
      * </p>
      *
      * @param amount the amount to deposit.
@@ -130,6 +140,10 @@ public abstract class BankAccount {
             return false;
         }
         balance += netDeposit;
+        
+        // Round balance to 2 decimal places to avoid floating-point precision issues (Bora - Week 9)
+        balance = Math.round(balance * 100.0) / 100.0;
+        
         lastMessage = "Deposited £" + amount + " (Commission: £" + getCommission() + "). New balance: £" + balance;
         TransactionWriter.logTransaction(accNumber, "Deposit", amount, balance); // <- NEW LINE Week 8 @Mertcan
         checkLowBalance(); // <- NEW LINE Week 8 @Mertcan
