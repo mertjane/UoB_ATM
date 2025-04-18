@@ -405,6 +405,7 @@ public class Bank {
     /**
      * Transfers money from the current account to another account.
      * @Author Mertcan Week 8
+     * @Modified Bora Week 9 - Added confirmation dialog
      * @param recipientAccNumber The account number of the recipient
      * @param amount The amount to transfer
      * @return true if the transfer was successful, false otherwise
@@ -426,6 +427,12 @@ public class Bank {
         
         if (currentAccount.getBalance() < amount) {
             lastMessage = "Insufficient funds for transfer";
+            return false;
+        }
+        
+        // Show confirmation dialog before proceeding with transfer
+        if (!TransferConfirmationScreen.showAndWaitForConfirmation(recipientAccNumber, amount)) {
+            lastMessage = "Transfer cancelled by user";
             return false;
         }
         
