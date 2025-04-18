@@ -4,18 +4,20 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 
 /**
- * The {@code TransactionReader} class retrieves transaction records from a CSV file
- * for a specified account. It reads {@code transactions.csv} and returns a list of
- * transaction lines matching the given account number, limited to a specified count.
+ * The {@code TransactionReader} class retrieves transaction records from a CSV
+ * file
+ * for a specified account. It reads {@code transactions.csv} and returns a list
+ * of
+ * transaction lines matching the given account number, limited to a specified
+ * count.
  * <p>
- * <strong>Usage:</strong> Used by {@link com.atm.View} to display transaction receipts.
+ * <strong>Usage:</strong> Used by {@link com.atm.View} to display transaction
+ * receipts.
  * </p>
  * <p>
  * <strong>File Format:</strong> Expects lines in the format:
@@ -31,44 +33,38 @@ import java.util.Map;
 public class TransactionReader {
   /** The path to the CSV file containing transaction records. */
   private static final String FILE_PATH = "transactions.csv";
-  private static final Map<String, String> accountNumberMap = new HashMap<>();
 
   /**
-     * Retrieves the most recent transactions for a given account number from the
-     * {@code transactions.csv} file.
-     * <p>
-     * Reads the CSV file line by line, collecting lines that contain the specified
-     * account number. Returns up to {@code count} most recent matching transactions.
-     * </p>
-     *
-     * @param accountNumber the account number to filter transactions
-     * @param count        the maximum number of transactions to return
-     * @return a {@code List<String>} of transaction lines, or an empty list if none found
-     * @throws RuntimeException if an I/O error occurs while reading the file
-     */
+   * Retrieves the most recent transactions for a given account number from the
+   * {@code transactions.csv} file.
+   * <p>
+   * Reads the CSV file line by line, collecting lines that contain the specified
+   * account number. Returns up to {@code count} most recent matching
+   * transactions.
+   * </p>
+   *
+   * @param accountNumber the account number to filter transactions
+   * @param count         the maximum number of transactions to return
+   * @return a {@code List<String>} of transaction lines, or an empty list if none
+   *         found
+   * @throws RuntimeException if an I/O error occurs while reading the file
+   */
   public static List<String> getTransactions(String accountNumber, int count) {
     List<String> recent = new LinkedList<>(); // List to store matching transactions
-
-    // Create the masked version of the account number for comparison
-    String maskedAccNumber = maskAccountNumber(accountNumber);
 
     // Check if file exists, if not, return empty list
     File file = new File(FILE_PATH);
     if (!file.exists()) {
-        return recent;
+      return recent;
     }
 
     try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) { // Open CSV file
       String line;
       while ((line = reader.readLine()) != null) { // Read each line
-        String[] parts = line.split(",");
-        if (parts.length >= 2) {
-          // Check if line contains the masked account number
-          if (parts[1].equals(maskedAccNumber)) { // Compare with the account number in the second column
-              recent.add(line); // Add matching line to list
-              if (recent.size() > count) { // Limit to 'count' entries
-                  recent.remove(0); // Remove oldest entry
-              }
+        if (line.contains(accountNumber)) { // Check if line contains account number
+          recent.add(line); // Add matching line to list
+          if (recent.size() > count) { // Limit to 'count' entries
+            recent.remove(0); // Remove oldest entry
           }
         }
       }
@@ -79,17 +75,4 @@ public class TransactionReader {
     return recent; // Return list of transactions
   }
 
-  /**
-   * Helper method to mask account number (show only last 2 digits)
-   * This ensures consistency with TransactionWriter.
-   */
-  private static String maskAccountNumber(String accountNumber) {
-    if (accountNumber == null || accountNumber.length() <= 2) {
-        return accountNumber; // Return as is if too short
-    }
-    
-    int length = accountNumber.length();
-    String lastTwoDigits = accountNumber.substring(length - 2);
-    return "***" + lastTwoDigits;
-  }
 }

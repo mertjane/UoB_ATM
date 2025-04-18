@@ -53,11 +53,12 @@ public class TransactionWriter {
 
   public static void logTransaction(String accountNumber, String type, double amount, double balance) {
     try (FileWriter writer = new FileWriter(FILE_PATH, true)) { // Append mode
-      // Create a comma-separated line with timestamp, account number, type, amount, and balance
-      String maskedAccNumber = maskAccountNumber(accountNumber);
+      // Create a comma-separated line with timestamp, account number, type, amount,
+      // and balance
+
       String line = String.join(",",
           formatter.format(LocalDateTime.now()), // Format current time
-          maskedAccNumber,
+          accountNumber,
           type,
           String.valueOf(amount), // Convert amount to String
           String.valueOf(balance)); // Convert balance to String
@@ -68,14 +69,4 @@ public class TransactionWriter {
     }
   }
 
-   // Helper method to mask account number (show only last 2 digits)
-   private static String maskAccountNumber(String accountNumber) {
-    if (accountNumber == null || accountNumber.length() <= 2) {
-        return accountNumber; // Return as is if too short
-    }
-    
-    int length = accountNumber.length();
-    String lastTwoDigits = accountNumber.substring(length - 2);
-    return "***" + lastTwoDigits;
-}
 }
