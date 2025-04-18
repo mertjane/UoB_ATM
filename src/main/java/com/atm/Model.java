@@ -96,15 +96,15 @@ public class Model {
     /** The second display message (which may span multiple lines). */
     String display2 = null;
 
-    // @Mertcan week 7: Flag to track if the user has checked their balance
+    // @Mertcan week 8: Flag to track if the user has checked their balance
     private boolean hasCheckedBalance = false;
 
-    // @Mertcan week 7: Setter for the hasCheckedBalance flag
+    // @Mertcan week 8: Setter for the hasCheckedBalance flag
     public void setHasCheckedBalance(boolean checked) {
         this.hasCheckedBalance = checked;
     }
 
-    // @Mertcan week 7: Getter for the hasCheckedBalance flag
+    // @Mertcan week 8: Getter for the hasCheckedBalance flag
     public boolean hasCheckedBalance() {
         return this.hasCheckedBalance;
     }

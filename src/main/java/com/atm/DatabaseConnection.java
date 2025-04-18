@@ -1,8 +1,7 @@
 
 /*  
  Developer: @Mertcan  
- Week: 7  
- Version: 3.1.0  
+ Week: 8  
 
  Feature Overview:  
  This functionality establishes a connection to a PostgreSQL database using JDBC.  

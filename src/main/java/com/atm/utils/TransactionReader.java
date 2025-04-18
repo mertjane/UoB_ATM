@@ -1,10 +1,13 @@
 package com.atm.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -28,7 +31,7 @@ import java.util.List;
 public class TransactionReader {
   /** The path to the CSV file containing transaction records. */
   private static final String FILE_PATH = "transactions.csv";
-
+  private static final Map<String, String> accountNumberMap = new HashMap<>();
 
   /**
      * Retrieves the most recent transactions for a given account number from the
@@ -46,13 +49,26 @@ public class TransactionReader {
   public static List<String> getTransactions(String accountNumber, int count) {
     List<String> recent = new LinkedList<>(); // List to store matching transactions
 
+    // Create the masked version of the account number for comparison
+    String maskedAccNumber = maskAccountNumber(accountNumber);
+
+    // Check if file exists, if not, return empty list
+    File file = new File(FILE_PATH);
+    if (!file.exists()) {
+        return recent;
+    }
+
     try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) { // Open CSV file
       String line;
       while ((line = reader.readLine()) != null) { // Read each line
-        if (line.contains(accountNumber)) { // Check if line contains account number
-          recent.add(line); // Add matching line to list
-          if (recent.size() > count) { // Limit to 'count' entries
-            recent.remove(0); // Remove oldest entry
+        String[] parts = line.split(",");
+        if (parts.length >= 2) {
+          // Check if line contains the masked account number
+          if (parts[1].equals(maskedAccNumber)) { // Compare with the account number in the second column
+              recent.add(line); // Add matching line to list
+              if (recent.size() > count) { // Limit to 'count' entries
+                  recent.remove(0); // Remove oldest entry
+              }
           }
         }
       }
@@ -61,5 +77,19 @@ public class TransactionReader {
       System.err.println("Failed to read transactions: " + e.getMessage());
     }
     return recent; // Return list of transactions
+  }
+
+  /**
+   * Helper method to mask account number (show only last 2 digits)
+   * This ensures consistency with TransactionWriter.
+   */
+  private static String maskAccountNumber(String accountNumber) {
+    if (accountNumber == null || accountNumber.length() <= 2) {
+        return accountNumber; // Return as is if too short
+    }
+    
+    int length = accountNumber.length();
+    String lastTwoDigits = accountNumber.substring(length - 2);
+    return "***" + lastTwoDigits;
   }
 }
