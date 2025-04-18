@@ -39,7 +39,7 @@ public class Main extends Application {
     /**
      * Initializes and starts the ATM application GUI.
      * <p>
-     * This method sets up debugging, creates a {@code Bank} object, adds test bank accounts,
+     * This method sets up debugging, creates a {@code Bank} object,
      * initializes the MVC components (Model, View, Controller), links them together, and displays the GUI.
      * </p>
      */
@@ -50,15 +50,8 @@ public class Main extends Application {
         Debug.trace("Main::start");
 
         // Create a Bank object for this ATM
+        // The Bank constructor will automatically load existing accounts from storage
         Bank b = new Bank();
-
-        // Add some test bank accounts
-        b.addBankAccount(new StudentAccount("00000", "00000", 0));
-        b.addBankAccount(new GoldAccount("11111", "11111", 0));
-        b.addBankAccount(new PlatinumAccount("22222", "22222", 0));
-        b.addBankAccount(new StudentAccount("00001", "00001", 100));
-        b.addBankAccount(new GoldAccount("00002", "00002", 200));
-        b.addBankAccount(new PlatinumAccount("00003", "00003", 300));
 
         // Create the Model, View, and Controller objects
         Model model = new Model(b);   // The model needs the Bank object to 'talk to' the bank
@@ -83,6 +76,8 @@ public class Main extends Application {
 
         // Ensure the Goodbye Page is shown when the user closes the application
         primaryStage.setOnCloseRequest(event -> {
+            // Save any pending changes before closing
+            b.saveAccounts();
             GoodbyePage goodbyePage = new GoodbyePage();
             goodbyePage.start(primaryStage); // Reuse the primaryStage for GoodbyePage
         });

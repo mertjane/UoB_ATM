@@ -2,6 +2,9 @@ package com.atm;
 
 import java.util.ArrayList;
 
+import com.atm.utils.AccountReader;
+import com.atm.utils.AccountWriter;
+
 /**
  * The Bank class is a simple implementation of a bank that manages a collection
  * of bank accounts.
@@ -47,9 +50,50 @@ public class Bank {
      */
     public Bank() {
         Debug.trace("Bank::<constructor>");
+        loadAccounts(); // Load accounts from persistent storage
+    }
 
-        // Initialize the accounts list as a new empty ArrayList
-        accounts = new ArrayList<>();
+    private void loadAccounts() {
+        // Load accounts from persistent storage
+        for (String[] accountData : AccountReader.readAccounts()) {
+            String accNumber = accountData[0];
+            String accPasswd = accountData[1];
+            String accType = accountData[2];
+            double balance = Double.parseDouble(accountData[3]);
+
+            BankAccount account;
+            switch (accType.toLowerCase()) {
+                case "student":
+                    account = new StudentAccount(accNumber, accPasswd, balance);
+                    break;
+                case "gold":
+                    account = new GoldAccount(accNumber, accPasswd, balance);
+                    break;
+                case "platinum":
+                    account = new PlatinumAccount(accNumber, accPasswd, balance);
+                    break;
+                default:
+                    account = new StudentAccount(accNumber, accPasswd, balance);
+            }
+            accounts.add(account);
+            numAccounts++;
+        }
+    }
+
+    public void saveAccounts() {
+        // Save all accounts to persistent storage
+        ArrayList<String[]> accountData = new ArrayList<>();
+        for (BankAccount account : accounts) {
+            String accType = account instanceof StudentAccount ? "student" :
+                           account instanceof GoldAccount ? "gold" : "platinum";
+            accountData.add(new String[]{
+                account.getAccNumber(),
+                account.getAccPasswd(),
+                accType,
+                String.valueOf(account.getBalance())
+            });
+        }
+        AccountWriter.writeAccounts(accountData);
     }
 
     /**
@@ -111,6 +155,7 @@ public class Bank {
         if (numAccounts < maxAccounts) {
             accounts.add(account);
             numAccounts++;
+            saveAccounts(); // Save after adding new account
             Debug.trace("Bank::addBankAccount: Added account " + account.getAccNumber());
             return true;
         } else {
@@ -203,11 +248,11 @@ public class Bank {
      */
     public boolean deposit(int amount) {
         if (loggedIn()) {
-            lastMessage = ""; // Reset the last message
+            lastMessage = "";
             boolean success = currentAccount.deposit(amount);
             if (success) {
-                lastMessage = "Deposit successful: £" + amount + " deposited";
-                // Add any low balance warning from the account
+                saveAccounts(); // Save after successful deposit
+                lastMessage = "Deposit successful: £" + amount + " deposited.\nCurrent balance: £" + currentAccount.getBalance();
                 String accountMessage = currentAccount.getLastMessage();
                 if (accountMessage.contains("WARNING: LOW BALANCE ALERT!")) {
                     lastMessage += "\n" + accountMessage.substring(accountMessage.indexOf("WARNING:"));
@@ -236,11 +281,11 @@ public class Bank {
      */
     public boolean withdraw(int amount) {
         if (loggedIn()) {
-            lastMessage = ""; // Reset the last message
+            lastMessage = "";
             boolean success = currentAccount.withdraw(amount);
             if (success) {
-                lastMessage = "Withdrawal successful: £" + amount + " withdrawn";
-                // Add any low balance warning from the account
+                saveAccounts(); // Save after successful withdrawal
+                lastMessage = "Withdrawal successful: £" + amount + " withdrawn\n Current Balance: £" + currentAccount.getBalance();
                 String accountMessage = currentAccount.getLastMessage();
                 if (accountMessage.contains("WARNING: LOW BALANCE ALERT!")) {
                     lastMessage += "\n" + accountMessage.substring(accountMessage.indexOf("WARNING:"));
@@ -303,6 +348,7 @@ public class Bank {
     public boolean changePassword(String accNumber, String newPassword) {
         if (loggedIn() && currentAccount.getAccNumber().equals(accNumber)) {
             currentAccount.setAccPasswd(newPassword);
+            saveAccounts(); // Save after password change
             Debug.trace("Bank::changePassword: Password changed for account " + accNumber);
             return true;
         }
@@ -378,13 +424,11 @@ public class Bank {
             return false;
         }
         
-        // Check for sufficient funds before attempting transfer
         if (currentAccount.getBalance() < amount) {
             lastMessage = "Insufficient funds for transfer";
             return false;
         }
         
-        // Find recipient account
         BankAccount recipient = null;
         for (BankAccount account : accounts) {
             if (account.getAccNumber().equals(recipientAccNumber)) {
@@ -393,9 +437,9 @@ public class Bank {
             }
         }
         
-        // Perform the transfer
         if (currentAccount.withdraw((int)amount)) {
             recipient.deposit((int)amount);
+            saveAccounts(); // Save after successful transfer
             lastMessage = "Transfer successful: £" + amount + " sent to account " + recipientAccNumber;
             return true;
         }

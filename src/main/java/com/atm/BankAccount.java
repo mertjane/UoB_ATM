@@ -87,7 +87,7 @@ public abstract class BankAccount {
      */
     public boolean withdraw(int amount) {
         if (amount <= 0 || amount > getWithdrawalLimit()) {
-            lastMessage = "Invalid withdrawal amount. Must be positive and no more than £" + getWithdrawalLimit() + ".";
+            lastMessage = "Invalid withdrawal amount.\nMust be positive and no more than £" + getWithdrawalLimit() + ".";
             Debug.trace(this.getClass().getSimpleName() + "::withdraw: " + lastMessage);
             return false;
         }
@@ -119,7 +119,7 @@ public abstract class BankAccount {
      */
     public boolean deposit(int amount) {
         if (amount <= 0 || amount > getDepositLimit()) {
-            lastMessage = "Invalid deposit amount. Must be positive and no more than £" + getDepositLimit() + ".";
+            lastMessage = "Invalid deposit amount.\nMust be positive and no more than £" + getDepositLimit() + ".";
             Debug.trace(this.getClass().getSimpleName() + "::deposit: " + lastMessage);
             return false;
         }

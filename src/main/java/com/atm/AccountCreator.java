@@ -2,6 +2,9 @@ package com.atm;
 
 import java.util.Random;
 
+import com.atm.utils.AccountReader;
+import com.atm.utils.AccountWriter;
+
 /**
  * The AccountCreator class handles the creation of new bank accounts.
  * It provides functionality for generating unique account numbers
@@ -42,9 +45,13 @@ public class AccountCreator {
             // Generate a random 5-digit number
             int num = 10000 + random.nextInt(90000);
             accountNumber = String.valueOf(num);
-        } while (bank.accountExists(accountNumber));
+        } while (bank.accountExists(accountNumber) || accountExistsInStorage(accountNumber));
         
         return accountNumber;
+    }
+    
+    private static boolean accountExistsInStorage(String accNumber) {
+        return AccountReader.findAccount(accNumber) != null;
     }
     
     /**
@@ -77,8 +84,10 @@ public class AccountCreator {
                 newAccount = new StudentAccount(accountNumber, password, 0);
         }
         
-        // Add the account to the bank
+        // Add the account to the bank and save to storage
         if (bank.addBankAccount(newAccount)) {
+            // Also save to persistent storage
+            AccountWriter.writeAccount(accountNumber, password, accountType.toLowerCase(), 0);
             Debug.trace("AccountCreator::createAccount: Created new " + accountType + 
                     " account with number " + accountNumber);
             return accountNumber;
